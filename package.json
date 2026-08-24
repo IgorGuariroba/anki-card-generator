@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "audit": "npm audit --audit-level=high",
-    "verify": "npm run audit && npm run typecheck && npm test && npm run lint && npm run build",
+    "verify": "node scripts/validate-plan-gates.mjs && npm run audit && npm run typecheck && npm test && npm run lint && npm run build",
     "prepare": "git config core.hooksPath .githooks",
     "test": "vitest run",
     "test:watch": "vitest"
