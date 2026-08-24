@@ -1,8 +1,13 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T17:30:37-03:00",
-  "statuses": ["pending", "in_progress", "completed", "blocked"],
+  "updatedAt": "2026-08-24T17:45:00-03:00",
+  "statuses": [
+    "pending",
+    "in_progress",
+    "completed",
+    "blocked"
+  ],
   "steps": [
     {
       "id": "foundation",
@@ -12,10 +17,41 @@
       "completedAt": "2026-08-24T17:23:07-03:00",
       "dependsOn": [],
       "substeps": [
-        { "id": "foundation-1", "title": "Escolher stack e arquitetura", "status": "completed" },
-        { "id": "foundation-2", "title": "Criar aplicação web responsiva", "status": "completed" },
-        { "id": "foundation-3", "title": "Configurar lint, formatação e variáveis de ambiente", "status": "completed" },
-        { "id": "foundation-4", "title": "Adicionar tokens e tema visual", "status": "completed" }
+        {
+          "id": "foundation-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-1",
+          "title": "Escolher stack e arquitetura",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-2",
+          "title": "Criar aplicação web responsiva",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-3",
+          "title": "Configurar lint, formatação e variáveis de ambiente",
+          "status": "completed"
+        },
+        {
+          "id": "foundation-4",
+          "title": "Adicionar tokens e tema visual",
+          "status": "completed"
+        }
       ]
     },
     {
@@ -23,12 +59,45 @@
       "title": "Autenticação e conta",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["foundation"],
+      "dependsOn": [
+        "foundation"
+      ],
       "substeps": [
-        { "id": "auth-1", "title": "Cadastro com e-mail e senha", "status": "pending" },
-        { "id": "auth-2", "title": "Login e logout", "status": "pending" },
-        { "id": "auth-3", "title": "Recuperação de senha", "status": "pending" },
-        { "id": "auth-4", "title": "Proteção de rotas e isolamento por usuário", "status": "pending" }
+        {
+          "id": "auth-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "auth-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "auth-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "auth-1",
+          "title": "Cadastro com e-mail e senha",
+          "status": "pending"
+        },
+        {
+          "id": "auth-2",
+          "title": "Login e logout",
+          "status": "pending"
+        },
+        {
+          "id": "auth-3",
+          "title": "Recuperação de senha",
+          "status": "pending"
+        },
+        {
+          "id": "auth-4",
+          "title": "Proteção de rotas e isolamento por usuário",
+          "status": "pending"
+        }
       ]
     },
     {
@@ -36,13 +105,50 @@
       "title": "Configuração de provedores de IA",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["auth"],
+      "dependsOn": [
+        "auth"
+      ],
       "substeps": [
-        { "id": "providers-1", "title": "Modelo de dados para provedores e chaves criptografadas", "status": "pending" },
-        { "id": "providers-2", "title": "Configurar chave OpenRouter", "status": "pending" },
-        { "id": "providers-3", "title": "Configurar provedor TTS externo", "status": "pending" },
-        { "id": "providers-4", "title": "Validar chaves e consultar limite quando disponível", "status": "pending" },
-        { "id": "providers-5", "title": "Selecionar modelos de texto, tradução, imagem e áudio", "status": "pending" }
+        {
+          "id": "providers-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "providers-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "providers-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "providers-1",
+          "title": "Modelo de dados para provedores e chaves criptografadas",
+          "status": "pending"
+        },
+        {
+          "id": "providers-2",
+          "title": "Configurar chave OpenRouter",
+          "status": "pending"
+        },
+        {
+          "id": "providers-3",
+          "title": "Configurar provedor TTS externo",
+          "status": "pending"
+        },
+        {
+          "id": "providers-4",
+          "title": "Validar chaves e consultar limite quando disponível",
+          "status": "pending"
+        },
+        {
+          "id": "providers-5",
+          "title": "Selecionar modelos de texto, tradução, imagem e áudio",
+          "status": "pending"
+        }
       ]
     },
     {
@@ -50,15 +156,60 @@
       "title": "Geração de cards",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["providers"],
+      "dependsOn": [
+        "providers"
+      ],
       "substeps": [
-        { "id": "generation-1", "title": "Cadastrar os 9 verbos e regras de dificuldade", "status": "pending" },
-        { "id": "generation-2", "title": "Criar fluxo de seleção de verbo e nível", "status": "pending" },
-        { "id": "generation-3", "title": "Gerar 10 frases estruturadas", "status": "pending" },
-        { "id": "generation-4", "title": "Validar frases e evitar duplicidades pelo histórico", "status": "pending" },
-        { "id": "generation-5", "title": "Gerar ou reutilizar imagens", "status": "pending" },
-        { "id": "generation-6", "title": "Gerar áudio com voz configurável", "status": "pending" },
-        { "id": "generation-7", "title": "Tratar falhas parciais e gerar cards faltantes", "status": "pending" }
+        {
+          "id": "generation-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "generation-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "generation-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "generation-1",
+          "title": "Cadastrar os 9 verbos e regras de dificuldade",
+          "status": "pending"
+        },
+        {
+          "id": "generation-2",
+          "title": "Criar fluxo de seleção de verbo e nível",
+          "status": "pending"
+        },
+        {
+          "id": "generation-3",
+          "title": "Gerar 10 frases estruturadas",
+          "status": "pending"
+        },
+        {
+          "id": "generation-4",
+          "title": "Validar frases e evitar duplicidades pelo histórico",
+          "status": "pending"
+        },
+        {
+          "id": "generation-5",
+          "title": "Gerar ou reutilizar imagens",
+          "status": "pending"
+        },
+        {
+          "id": "generation-6",
+          "title": "Gerar áudio com voz configurável",
+          "status": "pending"
+        },
+        {
+          "id": "generation-7",
+          "title": "Tratar falhas parciais e gerar cards faltantes",
+          "status": "pending"
+        }
       ]
     },
     {
@@ -66,13 +217,50 @@
       "title": "Revisão e edição",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["generation"],
+      "dependsOn": [
+        "generation"
+      ],
       "substeps": [
-        { "id": "review-1", "title": "Exibir lista/carrossel de cards", "status": "pending" },
-        { "id": "review-2", "title": "Editar frase e tradução", "status": "pending" },
-        { "id": "review-3", "title": "Regenerar ou substituir imagem e áudio", "status": "pending" },
-        { "id": "review-4", "title": "Adicionar tags, observações e pronúncia", "status": "pending" },
-        { "id": "review-5", "title": "Excluir e aprovar cards", "status": "pending" }
+        {
+          "id": "review-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "review-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "review-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "review-1",
+          "title": "Exibir lista/carrossel de cards",
+          "status": "pending"
+        },
+        {
+          "id": "review-2",
+          "title": "Editar frase e tradução",
+          "status": "pending"
+        },
+        {
+          "id": "review-3",
+          "title": "Regenerar ou substituir imagem e áudio",
+          "status": "pending"
+        },
+        {
+          "id": "review-4",
+          "title": "Adicionar tags, observações e pronúncia",
+          "status": "pending"
+        },
+        {
+          "id": "review-5",
+          "title": "Excluir e aprovar cards",
+          "status": "pending"
+        }
       ]
     },
     {
@@ -80,12 +268,45 @@
       "title": "Exportação para Anki",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["review"],
+      "dependsOn": [
+        "review"
+      ],
       "substeps": [
-        { "id": "export-1", "title": "Definir template da frente e do verso", "status": "pending" },
-        { "id": "export-2", "title": "Gerar pacote .apkg com mídias incorporadas", "status": "pending" },
-        { "id": "export-3", "title": "Disponibilizar download compatível com celular", "status": "pending" },
-        { "id": "export-4", "title": "Manter arquivos por 30 dias e permitir exclusão", "status": "pending" }
+        {
+          "id": "export-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "export-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "export-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "export-1",
+          "title": "Definir template da frente e do verso",
+          "status": "pending"
+        },
+        {
+          "id": "export-2",
+          "title": "Gerar pacote .apkg com mídias incorporadas",
+          "status": "pending"
+        },
+        {
+          "id": "export-3",
+          "title": "Disponibilizar download compatível com celular",
+          "status": "pending"
+        },
+        {
+          "id": "export-4",
+          "title": "Manter arquivos por 30 dias e permitir exclusão",
+          "status": "pending"
+        }
       ]
     },
     {
@@ -93,21 +314,92 @@
       "title": "Qualidade e entrega",
       "status": "pending",
       "agent": null,
-      "dependsOn": ["export"],
+      "dependsOn": [
+        "export"
+      ],
       "substeps": [
-        { "id": "quality-1", "title": "Testes de autenticação e autorização", "status": "pending" },
-        { "id": "quality-2", "title": "Testes do fluxo geração-revisão-exportação", "status": "pending" },
-        { "id": "quality-3", "title": "Testes de duplicidade e falhas de provedores", "status": "pending" },
-        { "id": "quality-4", "title": "Testes do pacote .apkg e mídias", "status": "pending" },
-        { "id": "quality-5", "title": "Validação visual mobile com os tokens de design", "status": "pending" },
-        { "id": "quality-6", "title": "Documentar execução, configuração e limitações", "status": "pending" },
-        { "id": "quality-7", "title": "Auditar e corrigir vulnerabilidades de dependências", "status": "completed", "agent": "pi", "completedAt": "2026-08-24T17:28:12-03:00", "note": "npm audit fix --force atualizou Next.js para 16.3.2; validações concluídas e npm audit reportou 0 vulnerabilidades." },
-        { "id": "quality-8", "title": "Aplicar guardrails versionados do Next.js 16", "status": "completed", "agent": "pi", "completedAt": "2026-08-24T17:30:37-03:00", "substeps": [
-          { "id": "quality-8-1", "title": "Configurar typedRoutes e reactStrictMode", "status": "completed" },
-          { "id": "quality-8-2", "title": "Documentar regras versionadas no AGENTS.md", "status": "completed" },
-          { "id": "quality-8-3", "title": "Adicionar comando único de verificação", "status": "completed" },
-          { "id": "quality-8-4", "title": "Executar verificação completa", "status": "completed" }
-        ] }
+        {
+          "id": "quality-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "pending"
+        },
+        {
+          "id": "quality-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "pending"
+        },
+        {
+          "id": "quality-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "pending"
+        },
+        {
+          "id": "quality-1",
+          "title": "Testes de autenticação e autorização",
+          "status": "pending"
+        },
+        {
+          "id": "quality-2",
+          "title": "Testes do fluxo geração-revisão-exportação",
+          "status": "pending"
+        },
+        {
+          "id": "quality-3",
+          "title": "Testes de duplicidade e falhas de provedores",
+          "status": "pending"
+        },
+        {
+          "id": "quality-4",
+          "title": "Testes do pacote .apkg e mídias",
+          "status": "pending"
+        },
+        {
+          "id": "quality-5",
+          "title": "Validação visual mobile com os tokens de design",
+          "status": "pending"
+        },
+        {
+          "id": "quality-6",
+          "title": "Documentar execução, configuração e limitações",
+          "status": "pending"
+        },
+        {
+          "id": "quality-7",
+          "title": "Auditar e corrigir vulnerabilidades de dependências",
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T17:28:12-03:00",
+          "note": "npm audit fix --force atualizou Next.js para 16.3.2; validações concluídas e npm audit reportou 0 vulnerabilidades."
+        },
+        {
+          "id": "quality-8",
+          "title": "Aplicar guardrails versionados do Next.js 16",
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T17:30:37-03:00",
+          "substeps": [
+            {
+              "id": "quality-8-1",
+              "title": "Configurar typedRoutes e reactStrictMode",
+              "status": "completed"
+            },
+            {
+              "id": "quality-8-2",
+              "title": "Documentar regras versionadas no AGENTS.md",
+              "status": "completed"
+            },
+            {
+              "id": "quality-8-3",
+              "title": "Adicionar comando único de verificação",
+              "status": "completed"
+            },
+            {
+              "id": "quality-8-4",
+              "title": "Executar verificação completa",
+              "status": "completed"
+            }
+          ]
+        }
       ]
     },
     {
@@ -116,13 +408,50 @@
       "status": "completed",
       "agent": "pi",
       "completedAt": "2026-08-24T17:34:12-03:00",
-      "dependsOn": ["foundation"],
+      "dependsOn": [
+        "foundation"
+      ],
       "substeps": [
-        { "id": "delivery-1", "title": "Inicializar Git e branch main", "status": "completed" },
-        { "id": "delivery-2", "title": "Configurar hooks pre-commit e pre-push", "status": "completed" },
-        { "id": "delivery-3", "title": "Configurar CI no GitHub Actions", "status": "completed" },
-        { "id": "delivery-4", "title": "Criar repositório público e publicar código", "status": "completed" },
-        { "id": "delivery-5", "title": "Proteger branch main e exigir CI verde", "status": "completed" }
+        {
+          "id": "delivery-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-1",
+          "title": "Inicializar Git e branch main",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-2",
+          "title": "Configurar hooks pre-commit e pre-push",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-3",
+          "title": "Configurar CI no GitHub Actions",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-4",
+          "title": "Criar repositório público e publicar código",
+          "status": "completed"
+        },
+        {
+          "id": "delivery-5",
+          "title": "Proteger branch main e exigir CI verde",
+          "status": "completed"
+        }
       ]
     }
   ]
