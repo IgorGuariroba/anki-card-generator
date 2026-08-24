@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T18:26:00-03:00",
+  "updatedAt": "2026-08-24T19:14:20-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -256,31 +256,45 @@
     {
       "id": "providers",
       "title": "Configuração de provedores de IA",
-      "status": "pending",
-      "agent": null,
+      "status": "in_progress",
+      "agent": "pi",
       "dependsOn": [
         "auth"
       ],
+      "research": {
+        "code": "A configuração será adicionada ao dashboard existente em src/app/dashboard/page.tsx, reutilizando os tokens e estilos globais de src/app/globals.css; não há backend ou armazenamento de credenciais implementado.",
+        "docs": "OpenRouter Authentication: https://openrouter.ai/docs/api_reference/authentication; Models API: https://openrouter.ai/docs/guides/overview/models. Next.js 16 local docs em node_modules/next/dist/docs/; a tela interativa será Client Component.",
+        "guardrails": [
+          "A chave nunca será renderizada novamente em texto após o salvamento; somente status e máscara serão exibidos.",
+          "O formulário exige chave OpenRouter e rejeita valor vazio; validação remota fica bloqueada até existir backend.",
+          "Provedor TTS é opcional e sua chave só poderá ser salva quando ambos os campos forem preenchidos.",
+          "Modelos de texto, imagem e tradução devem ser selecionáveis e manter valores distintos por categoria.",
+          "Nenhuma chave será persistida em localStorage, cookie ou variável exposta ao navegador nesta etapa."
+        ]
+      },
       "substeps": [
         {
           "id": "providers-research-code",
           "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "providers-research-docs",
           "title": "Pesquisar documentação oficial da versão instalada",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "providers-define-guardrails",
           "title": "Definir guardrails determinísticos da implementação",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "providers-1",
           "title": "Modelo de dados para provedores e chaves criptografadas",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:14:20-03:00",
+          "note": "Tela de configuração no dashboard com chave OpenRouter mascarada após salvamento e seleção independente de modelos; persistência segura ficará para o backend."
         },
         {
           "id": "providers-2",
@@ -338,7 +352,7 @@
       },
       "gates": {
         "preImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredSubsteps": [
             "providers-research-code",
             "providers-research-docs",

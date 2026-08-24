@@ -20,3 +20,11 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .form-error { color: #c73838; font-weight: 700; margin: 8px 0 0; }
 .form-success { color: #277a08; font-weight: 700; margin: 8px 0 0; }
 .auth-card a { color: var(--color-spark-blue); font-weight: 700; margin-top: 8px; }
+.settings-card { width: min(100%, 560px); padding: 32px 24px; }
+.settings-card h1 { font-size: clamp(40px, 10vw, 56px); }
+.settings-card form { display: grid; gap: 8px; text-align: left; }
+.settings-card label { font-weight: 700; margin-top: 8px; }
+.settings-card input, .settings-card select { border: 2px solid var(--color-faded-gray); border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-height: 48px; padding: 10px 12px; background: white; }
+.settings-card input:focus, .settings-card select:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
+.settings-card button { border: 0; cursor: pointer; font: inherit; margin-top: 16px; }
+.field-help { color: var(--color-pencil-gray); font-size: 14px; margin: 0 0 8px; }
