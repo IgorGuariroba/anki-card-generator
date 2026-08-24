@@ -109,6 +109,21 @@
           { "id": "quality-8-4", "title": "Executar verificação completa", "status": "completed" }
         ] }
       ]
+    },
+    {
+      "id": "delivery",
+      "title": "Governança Git, CI/CD e hooks",
+      "status": "completed",
+      "agent": "pi",
+      "completedAt": "2026-08-24T17:34:12-03:00",
+      "dependsOn": ["foundation"],
+      "substeps": [
+        { "id": "delivery-1", "title": "Inicializar Git e branch main", "status": "completed" },
+        { "id": "delivery-2", "title": "Configurar hooks pre-commit e pre-push", "status": "completed" },
+        { "id": "delivery-3", "title": "Configurar CI no GitHub Actions", "status": "completed" },
+        { "id": "delivery-4", "title": "Criar repositório público e publicar código", "status": "completed" },
+        { "id": "delivery-5", "title": "Proteger branch main e exigir CI verde", "status": "completed" }
+      ]
     }
   ]
 }
