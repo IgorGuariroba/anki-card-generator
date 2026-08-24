@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T19:14:20-03:00",
+  "updatedAt": "2026-08-24T19:20:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -314,7 +314,8 @@
         {
           "id": "providers-5",
           "title": "Selecionar modelos de texto, tradução, imagem e áudio",
-          "status": "pending"
+          "status": "in_progress",
+          "agent": "pi"
         }
       ],
       "securityVerification": {

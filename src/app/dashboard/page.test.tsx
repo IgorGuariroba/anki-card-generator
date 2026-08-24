@@ -14,6 +14,15 @@ describe('configuração de provedores', () => {
     expect(screen.getByText('••••••••')).toBeInTheDocument();
   });
 
+  it('permite buscar e escolher um modelo disponível do provedor', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getAllByLabelText('Buscar modelo de texto')[0], { target: { value: 'Claude' } });
+    expect(screen.getAllByRole('option', { name: /claude/i })[0]).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('option', { name: /claude/i })[0]);
+    expect(screen.getAllByLabelText('Buscar modelo de texto')[0]).toHaveValue('anthropic/claude-3.5-sonnet');
+  });
+
   it('rejeita configuração sem chave OpenRouter', async () => {
     render(<DashboardPage />);
 
