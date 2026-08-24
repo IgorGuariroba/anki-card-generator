@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T17:45:00-03:00",
+  "updatedAt": "2026-08-24T18:08:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -52,36 +52,96 @@
           "title": "Adicionar tokens e tema visual",
           "status": "completed"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "foundation-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "completed",
+          "requiredSubsteps": [
+            "foundation-research-code",
+            "foundation-research-docs",
+            "foundation-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "foundation-security-verification"
+        }
+      }
     },
     {
       "id": "auth",
       "title": "Autenticação e conta",
-      "status": "pending",
-      "agent": null,
+      "status": "in_progress",
+      "agent": "pi",
       "dependsOn": [
         "foundation"
       ],
+      "research": {
+        "code": "A aplicação tinha apenas src/app/page.tsx e estilos globais; a tela de cadastro reutilizará os tokens existentes e a suíte Vitest/Testing Library em src/app/page.test.tsx.",
+        "docs": "Next.js 16.3.2: App Router e Server Components por padrão; o formulário interativo será Client Component somente por exigir estado e submissão. Referência local: node_modules/next/dist/docs/.",
+        "guardrails": [
+          "Cadastro deve expor email, senha e confirmação de senha com labels acessíveis.",
+          "Senha divergente deve bloquear submissão e apresentar erro determinístico.",
+          "Senha deve ter no mínimo 8 caracteres.",
+          "A implementação inicial não persiste credenciais nem simula autenticação antes do backend existir."
+        ]
+      },
       "substeps": [
         {
           "id": "auth-research-code",
           "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "auth-research-docs",
           "title": "Pesquisar documentação oficial da versão instalada",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "auth-define-guardrails",
           "title": "Definir guardrails determinísticos da implementação",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "auth-1",
           "title": "Cadastro com e-mail e senha",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T17:56:00-03:00",
+          "note": "Tela /cadastro com validação acessível de senha mínima e confirmação; persistência fica para a integração de autenticação/backend."
         },
         {
           "id": "auth-2",
@@ -98,7 +158,89 @@
           "title": "Proteção de rotas e isolamento por usuário",
           "status": "pending"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "auth-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "completed",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": {
+          "SAST": {
+            "status": "completed",
+            "commands": [
+              "npm run lint",
+              "npm run typecheck"
+            ],
+            "result": "成功"
+          },
+          "SCA": {
+            "status": "completed",
+            "commands": [
+              "npm audit --audit-level=high"
+            ],
+            "result": "0 vulnerabilidades"
+          },
+          "Secret Scanning": {
+            "status": "completed",
+            "commands": [
+              "git grep -nE '(sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|password[[:space:]]*[:=])' -- ':!package-lock.json'"
+            ],
+            "result": "Nenhum segredo encontrado"
+          },
+          "DAST": {
+            "status": "completed",
+            "tool": "playwright-cli",
+            "result": "Tela /cadastro carregou e rejeitou confirmação divergente; sem falha de servidor observada",
+            "evidence": "evidencias-e2e/auth-1-dast-validacao.webm"
+          },
+          "API Security Testing": {
+            "status": "not_applicable",
+            "result": "Não há endpoints de API implementados nesta subetapa; será executado quando auth backend/API for criado."
+          }
+        },
+        "agent": "pi",
+        "completedAt": "2026-08-24T18:02:00-03:00"
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "completed",
+          "requiredSubsteps": [
+            "auth-research-code",
+            "auth-research-docs",
+            "auth-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "completed",
+          "requiredGate": "auth-security-verification"
+        }
+      }
     },
     {
       "id": "providers",
@@ -149,7 +291,54 @@
           "title": "Selecionar modelos de texto, tradução, imagem e áudio",
           "status": "pending"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "providers-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "pending",
+          "requiredSubsteps": [
+            "providers-research-code",
+            "providers-research-docs",
+            "providers-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "providers-security-verification"
+        }
+      }
     },
     {
       "id": "generation",
@@ -210,7 +399,54 @@
           "title": "Tratar falhas parciais e gerar cards faltantes",
           "status": "pending"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "generation-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "pending",
+          "requiredSubsteps": [
+            "generation-research-code",
+            "generation-research-docs",
+            "generation-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "generation-security-verification"
+        }
+      }
     },
     {
       "id": "review",
@@ -261,7 +497,54 @@
           "title": "Excluir e aprovar cards",
           "status": "pending"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "review-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "pending",
+          "requiredSubsteps": [
+            "review-research-code",
+            "review-research-docs",
+            "review-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "review-security-verification"
+        }
+      }
     },
     {
       "id": "export",
@@ -307,7 +590,54 @@
           "title": "Manter arquivos por 30 dias e permitir exclusão",
           "status": "pending"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "export-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "pending",
+          "requiredSubsteps": [
+            "export-research-code",
+            "export-research-docs",
+            "export-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "export-security-verification"
+        }
+      }
     },
     {
       "id": "quality",
@@ -400,7 +730,54 @@
             }
           ]
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "quality-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "pending",
+          "requiredSubsteps": [
+            "quality-research-code",
+            "quality-research-docs",
+            "quality-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "quality-security-verification"
+        }
+      }
     },
     {
       "id": "delivery",
@@ -452,7 +829,54 @@
           "title": "Proteger branch main e exigir CI verde",
           "status": "completed"
         }
-      ]
+      ],
+      "securityVerification": {
+        "id": "delivery-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "pending",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "pending"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "pending"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "pending"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "pending"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "pending"
+          }
+        ],
+        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "completed",
+          "requiredSubsteps": [
+            "delivery-research-code",
+            "delivery-research-docs",
+            "delivery-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "pending",
+          "requiredGate": "delivery-security-verification"
+        }
+      }
     }
   ]
 }
