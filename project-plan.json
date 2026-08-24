@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T18:14:10-03:00",
+  "updatedAt": "2026-08-24T18:21:20-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -156,7 +156,10 @@
         {
           "id": "auth-3",
           "title": "Recuperação de senha",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T18:21:20-03:00",
+          "note": "Tela /recuperar-senha com validação de e-mail, mensagem anti-enumeração e link acessível a partir do login; envio real ficará para a integração de autenticação/backend."
         },
         {
           "id": "auth-4",
