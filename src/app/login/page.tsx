@@ -45,6 +45,7 @@ export default function LoginPage() {
           <input id="email" name="email" type="email" required autoComplete="email" />
           <label htmlFor="password">Senha</label>
           <input id="password" name="password" type="password" required autoComplete="current-password" />
+          <a href="/recuperar-senha">Esqueci minha senha</a>
           {error && <p className="form-error" role="alert">{error}</p>}
           <button className="primary-button" type="submit">Entrar</button>
         </form>

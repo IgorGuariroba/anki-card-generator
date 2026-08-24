@@ -18,3 +18,5 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .auth-card input:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
 .auth-card button { border: 0; cursor: pointer; font: inherit; margin-top: 16px; }
 .form-error { color: #c73838; font-weight: 700; margin: 8px 0 0; }
+.form-success { color: #277a08; font-weight: 700; margin: 8px 0 0; }
+.auth-card a { color: var(--color-spark-blue); font-weight: 700; margin-top: 8px; }
