@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T19:20:00-03:00",
+  "updatedAt": "2026-08-24T19:35:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -314,42 +314,40 @@
         {
           "id": "providers-5",
           "title": "Selecionar modelos de texto, tradução, imagem e áudio",
-          "status": "in_progress",
-          "agent": "pi"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:27:00-03:00",
+          "note": "Adicionado seletor pesquisável de áudio e teste de isolamento das seleções de texto, tradução, imagem e áudio; npm run verify passou."
+        },
+        {
+          "id": "providers-security-verification",
+          "title": "Verificações de segurança contínuas da etapa",
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:35:00-03:00",
+          "note": "Verificações concluídas durante a implementação; evidências registradas no gate providers-security-verification."
         }
       ],
       "securityVerification": {
         "id": "providers-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "pending",
+        "status": "completed",
         "requiredChecks": [
-          {
-            "name": "SAST",
-            "description": "Análise estática do código",
-            "status": "pending"
-          },
-          {
-            "name": "SCA",
-            "description": "Análise de dependências e vulnerabilidades",
-            "status": "pending"
-          },
-          {
-            "name": "Secret Scanning",
-            "description": "Busca de segredos versionados ou expostos",
-            "status": "pending"
-          },
-          {
-            "name": "DAST",
-            "description": "Análise dinâmica da aplicação em execução",
-            "status": "pending"
-          },
-          {
-            "name": "API Security Testing",
-            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
-            "status": "pending"
-          }
+          { "name": "SAST", "description": "Análise estática do código", "status": "completed" },
+          { "name": "SCA", "description": "Análise de dependências e vulnerabilidades", "status": "completed" },
+          { "name": "Secret Scanning", "description": "Busca de segredos versionados ou expostos", "status": "completed" },
+          { "name": "DAST", "description": "Análise dinâmica da aplicação em execução", "status": "completed" },
+          { "name": "API Security Testing", "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API", "status": "not_applicable" }
         ],
-        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+        "evidence": {
+          "date": "2026-08-24",
+          "agent": "pi",
+          "SAST": "npm run lint && npm run typecheck — aprovado",
+          "SCA": "npm audit --audit-level=high — 0 vulnerabilidades",
+          "Secret Scanning": "git grep por padrões de chaves/privadas — nenhum segredo real; ocorrências são nomes de campos e fixture de teste",
+          "DAST": "playwright-cli em /login e /dashboard autenticado; modelos visíveis e chave não exposta; evidência: evidencias-e2e/providers-security-2026-08-24-final.webm",
+          "API Security Testing": "Não aplicável: esta implementação não possui endpoints de API."
+        }
       },
       "gates": {
         "preImplementation": {
@@ -361,7 +359,7 @@
           ]
         },
         "postImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredGate": "providers-security-verification"
         }
       }
