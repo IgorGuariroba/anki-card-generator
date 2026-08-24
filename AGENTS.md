@@ -22,6 +22,11 @@ O fluxo oficial de desenvolvimento deste projeto está definido em [`project-pla
 Todo agente deve:
 
 1. Ler o `project-plan.json` antes de iniciar qualquer implementação.
+2. Executar os subpassos de pré-implementação da etapa antes de alterar código:
+   - pesquisar no código os arquivos afetados e oportunidades de reaproveitamento;
+   - consultar a documentação oficial correspondente à versão instalada do framework e das bibliotecas relevantes;
+   - definir e registrar guardrails determinísticos para a mudança (invariantes, contratos, validações e comandos de verificação).
+3. Só iniciar a implementação depois que a pesquisa e os guardrails estiverem registrados na etapa.
 2. Identificar a etapa e a subetapa correspondente ao trabalho solicitado.
 3. Respeitar as dependências declaradas em `dependsOn`.
 4. Não iniciar uma subetapa bloqueada por outra etapa ainda não concluída.
@@ -33,6 +38,16 @@ Todo agente deve:
 6. Registrar o agente responsável no campo `agent` da etapa principal quando assumir uma tarefa.
 7. Só marcar uma tarefa como `completed` depois de executar as validações e testes aplicáveis.
 8. Atualizar `updatedAt` ao modificar o plano.
+
+## Guardrails determinísticos
+
+Cada etapa deve conter, antes dos subpassos de implementação, subpassos explícitos de pesquisa. Esses subpassos devem produzir decisões verificáveis, não apenas intenção:
+
+- `research-code`: arquivos, módulos, componentes ou interfaces existentes que serão reutilizados ou afetados;
+- `research-docs`: links ou referências da documentação da versão instalada;
+- `define-guardrails`: regras que podem ser verificadas por teste, lint, typecheck, build, auditoria ou revisão de diff.
+
+Se a pesquisa descobrir uma nova área de trabalho, dependência ou risco, adicione uma tarefa ao `project-plan.json` antes de implementá-la.
 
 ## Novas tarefas
 
