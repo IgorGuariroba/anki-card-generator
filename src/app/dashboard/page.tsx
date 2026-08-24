@@ -3,10 +3,28 @@
 import { FormEvent, useState } from 'react';
 
 const models = {
-  texto: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet'],
+  texto: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash'],
   imagem: ['openai/gpt-image-1', 'google/gemini-2.5-flash-image'],
   traducao: ['openai/gpt-4o-mini', 'google/gemini-2.0-flash'],
 };
+
+function ModelPicker({ label, models: availableModels }: { label: string; models: string[] }) {
+  const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState(availableModels[0]);
+  const [open, setOpen] = useState(false);
+  const filteredModels = availableModels.filter((model) => model.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div className="model-picker">
+      <label htmlFor={`${label}-search`}>{label}</label>
+      <input id={`${label}-search`} type="search" placeholder="Buscar modelo disponível" aria-label={`Buscar modelo de ${label.toLowerCase()}`} role="combobox" aria-expanded={open} aria-controls={`${label}-options`} value={open ? query : selected} onFocus={() => { setOpen(true); setQuery(''); }} onChange={(event) => { setQuery(event.target.value); setOpen(true); }} />
+      {open && <div id={`${label}-options`} className="model-options" role="listbox" aria-label={`Modelos disponíveis de ${label.toLowerCase()}`}>
+        {filteredModels.map((model) => <button key={model} type="button" role="option" aria-selected={model === selected} onClick={() => { setSelected(model); setQuery(''); setOpen(false); }}>{model}</button>)}
+        {!filteredModels.length && <p className="field-help">Nenhum modelo encontrado.</p>}
+      </div>}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const [openRouterKey, setOpenRouterKey] = useState('');
@@ -37,12 +55,9 @@ export default function DashboardPage() {
           <p className="field-help">A chave é protegida e nunca fica visível depois de salva.</p>
           {saved && <p className="form-success" role="status">Chave OpenRouter configurada <span aria-label="chave protegida">••••••••</span></p>}
           {error && <p className="form-error" role="alert">{error}</p>}
-          <label htmlFor="text-model">Modelo de texto</label>
-          <select id="text-model" defaultValue={models.texto[0]}>{models.texto.map((model) => <option key={model}>{model}</option>)}</select>
-          <label htmlFor="image-model">Modelo de imagem</label>
-          <select id="image-model" defaultValue={models.imagem[0]}>{models.imagem.map((model) => <option key={model}>{model}</option>)}</select>
-          <label htmlFor="translation-model">Modelo de tradução</label>
-          <select id="translation-model" defaultValue={models.traducao[0]}>{models.traducao.map((model) => <option key={model}>{model}</option>)}</select>
+          <ModelPicker label="Texto" models={models.texto} />
+          <ModelPicker label="Imagem" models={models.imagem} />
+          <ModelPicker label="Tradução" models={models.traducao} />
           <button className="primary-button" type="submit">Salvar configuração</button>
         </form>
       </section>
