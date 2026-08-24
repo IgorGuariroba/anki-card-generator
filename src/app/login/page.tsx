@@ -17,6 +17,7 @@ export default function LoginPage() {
       return;
     }
 
+    document.cookie = 'anki_session=active; Path=/; SameSite=Lax';
     setError('');
     setAuthenticated(true);
   }
@@ -28,7 +29,10 @@ export default function LoginPage() {
           <p className="eyebrow">English Light Verbs</p>
           <h1 id="welcome-title">Você está conectado</h1>
           <p className="hero-copy">Pronto para continuar praticando seus cards.</p>
-          <button className="secondary-button" type="button" onClick={() => setAuthenticated(false)}>Sair</button>
+          <button className="secondary-button" type="button" onClick={() => {
+            document.cookie = 'anki_session=; Path=/; Max-Age=0; SameSite=Lax';
+            setAuthenticated(false);
+          }}>Sair</button>
         </section>
       </main>
     );

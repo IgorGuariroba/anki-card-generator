@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T18:21:20-03:00",
+  "updatedAt": "2026-08-24T18:26:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -164,7 +164,10 @@
         {
           "id": "auth-4",
           "title": "Proteção de rotas e isolamento por usuário",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T18:26:00-03:00",
+          "note": "Proxy protege /dashboard por cookie de sessão; login cria a sessão e logout a remove. O isolamento de dados persistidos será concluído na integração com backend."
         }
       ],
       "securityVerification": {
