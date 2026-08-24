@@ -1,5 +1,14 @@
 #!/bin/sh
 set -eu
+
+branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+if [ "$branch" = "main" ]; then
+  echo "Commit bloqueado: não é permitido commitar diretamente na branch main." >&2
+  echo "Crie uma branch de trabalho e abra um Pull Request." >&2
+  exit 1
+fi
+
+node scripts/validate-plan-gates.mjs
 npm run typecheck
 npm test -- --run
 npm run lint

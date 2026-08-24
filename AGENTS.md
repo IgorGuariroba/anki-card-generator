@@ -62,6 +62,10 @@ Se durante o desenvolvimento surgir uma tarefa, dependência ou etapa que não e
 5. Colocar subtarefas em `substeps` quando a tarefa tiver mais de uma atividade.
 6. Só depois iniciar a implementação, desde que as dependências estejam satisfeitas.
 
+## Proteção local da branch principal
+
+É proibido criar commits locais diretamente na `main`. O hook `pre-commit` deve bloquear essa tentativa; o trabalho deve ocorrer em uma branch e ser integrado via Pull Request.
+
 ## Gerenciamento obrigatório de processos
 
 Antes de iniciar um novo processo de desenvolvimento, servidor, watcher ou teste persistente, o agente deve encerrar o processo anterior equivalente. Em particular, executar `npm run dev` novamente deve derrubar o servidor anterior na porta configurada e iniciar uma única instância nova. Nunca deixar processos órfãos ocupando portas ou executando tarefas duplicadas.
