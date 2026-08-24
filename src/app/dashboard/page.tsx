@@ -6,6 +6,7 @@ const models = {
   texto: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash'],
   imagem: ['openai/gpt-image-1', 'google/gemini-2.5-flash-image'],
   traducao: ['openai/gpt-4o-mini', 'google/gemini-2.0-flash'],
+  audio: ['openai/gpt-4o-mini-tts', 'elevenlabs/eleven-v3', 'google/gemini-2.5-flash-preview-tts'],
 };
 
 function ModelPicker({ label, models: availableModels }: { label: string; models: string[] }) {
@@ -58,6 +59,7 @@ export default function DashboardPage() {
           <ModelPicker label="Texto" models={models.texto} />
           <ModelPicker label="Imagem" models={models.imagem} />
           <ModelPicker label="Tradução" models={models.traducao} />
+          <ModelPicker label="Áudio" models={models.audio} />
           <button className="primary-button" type="submit">Salvar configuração</button>
         </form>
       </section>

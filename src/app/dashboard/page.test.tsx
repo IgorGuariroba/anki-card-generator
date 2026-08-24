@@ -1,6 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
 import DashboardPage from './page';
+
+afterEach(cleanup);
 
 describe('configuração de provedores', () => {
   it('permite salvar a chave OpenRouter sem expô-la novamente', async () => {
@@ -21,6 +23,23 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByRole('option', { name: /claude/i })[0]).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole('option', { name: /claude/i })[0]);
     expect(screen.getAllByLabelText('Buscar modelo de texto')[0]).toHaveValue('anthropic/claude-3.5-sonnet');
+  });
+
+  it('mantém seleções independentes para texto, tradução, imagem e áudio', () => {
+    render(<DashboardPage />);
+
+    const translationSearch = screen.getByLabelText('Buscar modelo de tradução');
+    fireEvent.change(translationSearch, { target: { value: 'gemini' } });
+    fireEvent.click(screen.getAllByRole('option', { name: 'google/gemini-2.0-flash' })[0]);
+
+    const audioSearch = screen.getByLabelText('Buscar modelo de áudio');
+    fireEvent.change(audioSearch, { target: { value: 'eleven' } });
+    fireEvent.click(screen.getByRole('option', { name: 'elevenlabs/eleven-v3' }));
+
+    expect(translationSearch).toHaveValue('google/gemini-2.0-flash');
+    expect(audioSearch).toHaveValue('elevenlabs/eleven-v3');
+    expect(screen.getByLabelText('Buscar modelo de texto')).toHaveValue('openai/gpt-4o-mini');
+    expect(screen.getByLabelText('Buscar modelo de imagem')).toHaveValue('openai/gpt-image-1');
   });
 
   it('rejeita configuração sem chave OpenRouter', async () => {

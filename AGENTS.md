@@ -37,7 +37,8 @@ Todo agente deve:
    - `blocked`: impedida por dependência, decisão ou problema externo.
 6. Registrar o agente responsável no campo `agent` da etapa principal quando assumir uma tarefa.
 7. Só marcar uma tarefa como `completed` depois de executar as validações e testes aplicáveis.
-7.1. O status `completed` de uma etapa exige que o gate pós-implementação `securityVerification` esteja `completed`, com evidência para SAST, SCA, Secret Scanning, DAST e API Security Testing (ou `not_applicable` justificado).
+7.1. As verificações de segurança devem começar durante o desenvolvimento (`in_progress`) e acompanhar cada subetapa, registrando evidências e corrigindo achados antes da conclusão.
+7.2. O status `completed` de uma etapa exige que o gate pós-implementação `securityVerification` esteja `completed`, com evidência consolidada para SAST, SCA, Secret Scanning, DAST e API Security Testing (ou `not_applicable` justificado).
 8. Atualizar `updatedAt` ao modificar o plano.
 9. Após cada etapa concluída, executar e registrar obrigatoriamente a verificação de segurança: **SAST**, **SCA**, **Secret Scanning**, **DAST** e **API Security Testing**. Se alguma ferramenta não se aplicar ou ainda não estiver disponível, registrar explicitamente a limitação e o motivo no `project-plan.json`; não considerar a etapa concluída sem essa evidência ou bloqueio documentado.
 
@@ -86,7 +87,7 @@ A direção visual e os tokens de design estão descritos nos arquivos de refer�
 
 ## Verificação de segurança obrigatória por etapa
 
-Cada etapa do `project-plan.json` deve possuir um subpasso `security-verification` (ou equivalente) que só pode ser marcado como `completed` após registrar:
+Cada etapa do `project-plan.json` deve possuir um subpasso `security-verification` (ou equivalente). Ele deve ficar `in_progress` assim que a implementação começar, para que as verificações ocorram continuamente, e só pode ser marcado como `completed` após registrar:
 
 - **SAST**: análise estática do código;
 - **SCA**: análise de dependências e vulnerabilidades;
