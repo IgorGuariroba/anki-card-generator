@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T19:40:00-03:00",
+  "updatedAt": "2026-08-24T19:59:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -419,12 +419,18 @@
         {
           "id": "generation-2",
           "title": "Criar fluxo de seleção de verbo e nível",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:59:00-03:00",
+          "note": "Fluxo acessível de seleção e submissão já existente foi validado pela suíte de dashboard."
         },
         {
           "id": "generation-3",
           "title": "Gerar 10 frases estruturadas",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:59:00-03:00",
+          "note": "Após seleção válida, a interface exibe exatamente 10 cards estruturados com índice e tradução pendente; cobertura TDD adicionada."
         },
         {
           "id": "generation-4",

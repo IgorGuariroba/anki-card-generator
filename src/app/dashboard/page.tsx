@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const [verb, setVerb] = useState('');
   const [level, setLevel] = useState('');
   const [generationMessage, setGenerationMessage] = useState('');
+  const [generatedCards, setGeneratedCards] = useState<string[]>([]);
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,7 +47,9 @@ export default function DashboardPage() {
       return;
     }
     setError('');
-    setGenerationMessage(`Geração iniciada para ${verb} no nível ${levels[level as keyof typeof levels].toLowerCase()}.`);
+    const difficulty = levels[level as keyof typeof levels].toLowerCase();
+    setGenerationMessage(`Geração iniciada para ${verb} no nível ${difficulty}.`);
+    setGeneratedCards(Array.from({ length: 10 }, (_, index) => `Exemplo ${index + 1}: I ${verb} something.`));
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -98,6 +101,17 @@ export default function DashboardPage() {
             <button className="primary-button" type="submit">Iniciar geração</button>
           </form>
           {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
+          {generatedCards.length > 0 && (
+            <section aria-label="Cards gerados" className="generated-cards">
+              {generatedCards.map((sentence, index) => (
+                <article key={`${sentence}-${index}`} className="generated-card">
+                  <p className="eyebrow">Frase {index + 1} de 10</p>
+                  <p>{sentence}</p>
+                  <p className="field-help">Tradução pendente</p>
+                </article>
+              ))}
+            </section>
+          )}
         </section>
       </section>
     </main>

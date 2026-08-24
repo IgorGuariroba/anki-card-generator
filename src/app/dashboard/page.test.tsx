@@ -52,6 +52,18 @@ describe('configuração de provedores', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Geração iniciada para make no nível intermediário.');
   });
 
+  it('exibe 10 frases estruturadas após iniciar a geração', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getByRole('region', { name: 'Cards gerados' })).toBeInTheDocument();
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+    expect(screen.getAllByText(/Frase \d+ de 10/)).toHaveLength(10);
+  });
+
   it('rejeita geração sem verbo ou nível', () => {
     render(<DashboardPage />);
 
