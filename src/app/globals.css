@@ -1,0 +1,12 @@
+:root {
+  --color-eager-green: #58cc02; --color-storybook-green: #d7ffb8; --color-spark-blue: #1cb0f6; --color-fresh-leaf: #a5ed6e; --color-night-ink: #000437; --color-paper-white: #ffffff; --color-charcoal: #4b4b4b; --color-pencil-gray: #777777; --color-faded-gray: #afafaf; --radius-control: 12px; --space-unit: 4px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-paper-white); color: var(--color-charcoal); font-family: Arial, sans-serif; }
+.page-shell { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.hero { width: min(100%, 720px); text-align: center; padding: 48px 24px; }
+.eyebrow { color: var(--color-spark-blue); font-weight: 700; letter-spacing: .053em; text-transform: uppercase; font-size: 13px; }
+h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-height: 1.2; letter-spacing: -.02em; margin: 16px 0; }
+.hero-copy { color: var(--color-pencil-gray); font-size: 17px; line-height: 1.4; margin: 0 auto 28px; max-width: 520px; }
+.primary-button { display: inline-block; border-radius: var(--radius-control); background: var(--color-eager-green); color: white; font-weight: 700; padding: 16px 24px; text-decoration: none; }
+.primary-button:focus-visible { outline: 3px solid var(--color-spark-blue); outline-offset: 3px; }
