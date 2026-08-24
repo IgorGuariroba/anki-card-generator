@@ -10,3 +10,11 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .hero-copy { color: var(--color-pencil-gray); font-size: 17px; line-height: 1.4; margin: 0 auto 28px; max-width: 520px; }
 .primary-button { display: inline-block; border-radius: var(--radius-control); background: var(--color-eager-green); color: white; font-weight: 700; padding: 16px 24px; text-decoration: none; }
 .primary-button:focus-visible { outline: 3px solid var(--color-spark-blue); outline-offset: 3px; }
+.auth-card { width: min(100%, 440px); padding: 32px 24px; }
+.auth-card h1 { font-size: clamp(40px, 10vw, 56px); }
+.auth-card form { display: grid; gap: 8px; text-align: left; }
+.auth-card label { font-weight: 700; margin-top: 8px; }
+.auth-card input { border: 2px solid var(--color-faded-gray); border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-height: 48px; padding: 10px 12px; }
+.auth-card input:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
+.auth-card button { border: 0; cursor: pointer; font: inherit; margin-top: 16px; }
+.form-error { color: #c73838; font-weight: 700; margin: 8px 0 0; }
