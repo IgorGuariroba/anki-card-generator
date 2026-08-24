@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T19:35:00-03:00",
+  "updatedAt": "2026-08-24T19:40:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -333,11 +333,31 @@
         "title": "Verificação obrigatória de segurança pós-etapa",
         "status": "completed",
         "requiredChecks": [
-          { "name": "SAST", "description": "Análise estática do código", "status": "completed" },
-          { "name": "SCA", "description": "Análise de dependências e vulnerabilidades", "status": "completed" },
-          { "name": "Secret Scanning", "description": "Busca de segredos versionados ou expostos", "status": "completed" },
-          { "name": "DAST", "description": "Análise dinâmica da aplicação em execução", "status": "completed" },
-          { "name": "API Security Testing", "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API", "status": "not_applicable" }
+          {
+            "name": "SAST",
+            "description": "Análise estática do código",
+            "status": "completed"
+          },
+          {
+            "name": "SCA",
+            "description": "Análise de dependências e vulnerabilidades",
+            "status": "completed"
+          },
+          {
+            "name": "Secret Scanning",
+            "description": "Busca de segredos versionados ou expostos",
+            "status": "completed"
+          },
+          {
+            "name": "DAST",
+            "description": "Análise dinâmica da aplicação em execução",
+            "status": "completed"
+          },
+          {
+            "name": "API Security Testing",
+            "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
+            "status": "not_applicable"
+          }
         ],
         "evidence": {
           "date": "2026-08-24",
@@ -367,8 +387,8 @@
     {
       "id": "generation",
       "title": "Geração de cards",
-      "status": "pending",
-      "agent": null,
+      "status": "in_progress",
+      "agent": "pi",
       "dependsOn": [
         "providers"
       ],
@@ -376,22 +396,25 @@
         {
           "id": "generation-research-code",
           "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "generation-research-docs",
           "title": "Pesquisar documentação oficial da versão instalada",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "generation-define-guardrails",
           "title": "Definir guardrails determinísticos da implementação",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "generation-1",
           "title": "Cadastrar os 9 verbos e regras de dificuldade",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T19:37:00-03:00",
+          "note": "Dashboard agora permite selecionar exatamente os 9 verbos e um dos três níveis, com validação acessível e mensagem de início determinística."
         },
         {
           "id": "generation-2",
@@ -427,7 +450,7 @@
       "securityVerification": {
         "id": "generation-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "pending",
+        "status": "in_progress",
         "requiredChecks": [
           {
             "name": "SAST",
@@ -455,11 +478,11 @@
             "status": "pending"
           }
         ],
-        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+        "evidence": "Verificações contínuas iniciadas; SAST, SCA, Secret Scanning, DAST e API Security Testing serão registrados antes da conclusão."
       },
       "gates": {
         "preImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredSubsteps": [
             "generation-research-code",
             "generation-research-docs",
@@ -470,6 +493,17 @@
           "status": "pending",
           "requiredGate": "generation-security-verification"
         }
+      },
+      "research": {
+        "code": "A tela interativa existente em src/app/dashboard/page.tsx reutiliza ModelPicker, tokens de globals.css e testes Vitest/Testing Library em dashboard/page.test.tsx; a nova seleção será adicionada como seção de geração no dashboard.",
+        "docs": "Next.js 16 App Router/Client Components: documentação versionada local em node_modules/next/dist/docs/; React 19 useState e formulários serão usados apenas para estado interativo.",
+        "guardrails": [
+          "A lista deve conter exatamente make, do, take, get, have, give, put, set e go.",
+          "O usuário deve selecionar exatamente um verbo e um nível entre iniciante, intermediário e avançado.",
+          "A seleção deve ser acessível por labels e controles nativos, com valores estáveis para submissão.",
+          "A ação de iniciar geração deve impedir submissão sem verbo e nível e informar erro determinístico.",
+          "npm test, npm run lint, npm run typecheck e npm run build devem permanecer verdes."
+        ]
       }
     },
     {

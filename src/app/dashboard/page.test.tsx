@@ -42,6 +42,24 @@ describe('configuração de provedores', () => {
     expect(screen.getByLabelText('Buscar modelo de imagem')).toHaveValue('openai/gpt-image-1');
   });
 
+  it('permite escolher verbo e nível para iniciar uma geração', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'intermediario' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Geração iniciada para make no nível intermediário.');
+  });
+
+  it('rejeita geração sem verbo ou nível', () => {
+    render(<DashboardPage />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Selecione um verbo e um nível.');
+  });
+
   it('rejeita configuração sem chave OpenRouter', async () => {
     render(<DashboardPage />);
 

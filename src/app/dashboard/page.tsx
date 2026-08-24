@@ -2,6 +2,9 @@
 
 import { FormEvent, useState } from 'react';
 
+const verbs = ['make', 'do', 'take', 'get', 'have', 'give', 'put', 'set', 'go'] as const;
+const levels = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' } as const;
+
 const models = {
   texto: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash'],
   imagem: ['openai/gpt-image-1', 'google/gemini-2.5-flash-image'],
@@ -31,6 +34,20 @@ export default function DashboardPage() {
   const [openRouterKey, setOpenRouterKey] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+  const [verb, setVerb] = useState('');
+  const [level, setLevel] = useState('');
+  const [generationMessage, setGenerationMessage] = useState('');
+
+  function handleGeneration(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!verb || !level) {
+      setGenerationMessage('');
+      setError('Selecione um verbo e um nível.');
+      return;
+    }
+    setError('');
+    setGenerationMessage(`Geração iniciada para ${verb} no nível ${levels[level as keyof typeof levels].toLowerCase()}.`);
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,6 +79,26 @@ export default function DashboardPage() {
           <ModelPicker label="Áudio" models={models.audio} />
           <button className="primary-button" type="submit">Salvar configuração</button>
         </form>
+
+        <section className="generation-section" aria-labelledby="generation-title">
+          <p className="eyebrow">Nova sessão</p>
+          <h2 id="generation-title">Gerar cards</h2>
+          <p className="hero-copy">Escolha um verbo e a dificuldade para preparar 10 cards.</p>
+          <form onSubmit={handleGeneration} noValidate>
+            <label htmlFor="verb">Verbo</label>
+            <select id="verb" value={verb} onChange={(event) => setVerb(event.target.value)}>
+              <option value="">Selecione um verbo</option>
+              {verbs.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+            <label htmlFor="level">Nível</label>
+            <select id="level" value={level} onChange={(event) => setLevel(event.target.value)}>
+              <option value="">Selecione um nível</option>
+              {Object.entries(levels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+            <button className="primary-button" type="submit">Iniciar geração</button>
+          </form>
+          {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
+        </section>
       </section>
     </main>
   );
