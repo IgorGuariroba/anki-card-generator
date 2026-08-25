@@ -143,8 +143,14 @@ export default function DashboardPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!openRouterKey.trim()) {
+    const trimmedKey = openRouterKey.trim();
+    if (!trimmedKey) {
       setError('Informe a chave OpenRouter.');
+      setSaved(false);
+      return;
+    }
+    if (!trimmedKey.startsWith('sk-or-')) {
+      setError('A chave OpenRouter deve iniciar com "sk-or-".');
       setSaved(false);
       return;
     }

@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T11:52:00-03:00",
+  "updatedAt": "2026-08-25T12:04:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -299,7 +299,10 @@
         {
           "id": "providers-2",
           "title": "Configurar chave OpenRouter",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T12:04:00-03:00",
+          "note": "Adicionada validação de formato client-side: a chave OpenRouter agora precisa iniciar com 'sk-or-' (prefixo documentado pela OpenRouter, confirmado via web_search em openrouter.ai/docs/api_reference/authentication e trevorfox.com/api-key-tester/openrouter), além da validação já existente de campo não vazio. Erro determinístico 'A chave OpenRouter deve iniciar com \"sk-or-\".' exibido via role=alert sem persistir a chave inválida. Teste TDD adicionado em src/app/dashboard/page.test.tsx (vermelho confirmado antes da implementação: alerta não encontrado; verde depois). Limitação mantida de providers-1: validação remota/consulta real ao provedor e persistência segura ainda dependem do backend (SPEC.md linha 73: chaves nunca expostas ao navegador durante chamadas de geração e armazenadas de forma segura/criptografada no backend); esta subetapa cobre apenas o guardrail de formato no cliente."
         },
         {
           "id": "providers-3",
@@ -366,7 +369,16 @@
           "SCA": "npm audit --audit-level=high — 0 vulnerabilidades",
           "Secret Scanning": "git grep por padrões de chaves/privadas — nenhum segredo real; ocorrências são nomes de campos e fixture de teste",
           "DAST": "playwright-cli em /login e /dashboard autenticado; modelos visíveis e chave não exposta; evidência: evidencias-e2e/providers-security-2026-08-24-final.webm",
-          "API Security Testing": "Não aplicável: esta implementação não possui endpoints de API."
+          "API Security Testing": "Não aplicável: esta implementação não possui endpoints de API.",
+          "providers-2": {
+            "date": "2026-08-25",
+            "agent": "pi",
+            "SAST": "npm run verify em 2026-08-25T12:03-03:00: gate script, audit, typecheck, 67 testes (1 novo em src/app/dashboard/page.test.tsx), lint e build aprovados.",
+            "SCA": "npm audit --audit-level=high: 0 vulnerabilidades; nenhuma dependência nova adicionada.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 484805) e encerrado ao final (porta 3000 livre confirmada via lsof). playwright-cli --headed: login em /login, /dashboard, preenchimento da Chave OpenRouter com 'chave-invalida-qualquer' e clique em 'Salvar configuração' confirmando via snapshot o alerta real 'A chave OpenRouter deve iniciar com \"sk-or-\".' em runtime de navegador (não apenas jsdom); em seguida preenchimento com 'sk-or-v1-teste-valido' confirmando via snapshot a mensagem de sucesso 'Chave OpenRouter configurada ••••••••' sem exibir o valor real da chave. Evidência: evidencias-e2e/providers-2-openrouter-key-format-2026-08-25.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: a validação de formato ocorre inteiramente no cliente, sem endpoint de API novo nesta subetapa; a validação remota da chave junto ao provedor OpenRouter permanece pendente para a integração com backend (providers-4)."
+          }
         }
       },
       "gates": {
