@@ -22,4 +22,14 @@ describe('proteção de rotas', () => {
   it('mantém páginas públicas acessíveis', () => {
     expect(proxy(request('/login')).headers.get('location')).toBeNull();
   });
+
+  it('protege sub-rotas aninhadas do dashboard, não apenas a raiz', () => {
+    const response = proxy(request('/dashboard/configuracoes'));
+    expect(response.headers.get('location')).toBe('http://localhost/login');
+  });
+
+  it('não autoriza sessão com valor vazio', () => {
+    const response = proxy(request('/dashboard', ''));
+    expect(response.headers.get('location')).toBe('http://localhost/login');
+  });
 });

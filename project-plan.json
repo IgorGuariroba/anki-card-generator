@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T23:30:00-03:00",
+  "updatedAt": "2026-08-26T10:05:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -933,31 +933,46 @@
     {
       "id": "quality",
       "title": "Qualidade e entrega",
-      "status": "pending",
-      "agent": null,
+      "status": "in_progress",
+      "agent": "pi",
       "dependsOn": [
         "export"
       ],
+      "research": {
+        "code": "src/proxy.ts + src/proxy.test.ts protegem apenas '/dashboard' via cookie anki_session; src/app/login/page.tsx cria/remove o cookie no cliente e alterna entre formulário de login e tela autenticada com botão Sair; src/app/cadastro/page.tsx e src/app/recuperar-senha/page.tsx já possuem cobertura de validação de senha/e-mail. Reaproveitados os arquivos de teste existentes (proxy.test.ts, login/page.test.tsx, cadastro/page.test.tsx) para adicionar casos de autorização e autenticação sem duplicar suites.",
+        "docs": "Next.js 16.3.2 Middleware/Proxy: node_modules/next/dist/docs/ (matcher de rotas protegidas, NextResponse.redirect); Testing Library/Vitest já configurados em vitest.config.ts com alias '@' e jsdom.",
+        "guardrails": [
+          "Sub-rotas aninhadas de /dashboard (ex.: /dashboard/x) devem ser bloqueadas para usuário anônimo, não apenas a raiz.",
+          "Sessão com valor de cookie vazio nunca deve ser tratada como autenticada.",
+          "Login deve rejeitar e-mail ou senha compostos apenas por espaços em branco.",
+          "Logout deve remover o cookie de sessão e devolver o usuário à tela de login.",
+          "Cadastro deve rejeitar senha com menos de 8 caracteres mesmo quando a confirmação coincide com ela.",
+          "npm run verify deve permanecer verde após os novos testes."
+        ]
+      },
       "substeps": [
         {
           "id": "quality-research-code",
           "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "quality-research-docs",
           "title": "Pesquisar documentação oficial da versão instalada",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "quality-define-guardrails",
           "title": "Definir guardrails determinísticos da implementação",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "quality-1",
           "title": "Testes de autenticação e autorização",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T10:05:00-03:00",
+          "note": "Adicionados 3 testes em src/proxy.test.ts (sub-rota aninhada /dashboard/configuracoes bloqueada, sessão com cookie vazio rejeitada, páginas públicas seguem acessíveis), 2 em src/app/login/page.test.tsx (e-mail/senha somente com espaços rejeitados; logout remove o cookie anki_session e retorna à tela de login) e 1 em src/app/cadastro/page.test.tsx (senha curta bloqueada mesmo com confirmação idêntica). Total da suite passou de 51 para 58 testes. npm run verify aprovado (gate script, audit, typecheck, 58 testes, lint, build). Validação DAST via playwright-cli --headed contra npm run dev confirmou em runtime real: acesso anônimo a /dashboard/configuracoes redireciona para /login (location.pathname == '/login'); após login válido o cookie anki_session=active permite acesso à mesma sub-rota sem redirecionamento; clique em 'Sair' remove o cookie (cookie-get retornou 'not found') e volta à tela 'Entrar na sua conta'. Servidor de desenvolvimento (npm run dev) foi encerrado ao final para não deixar processo órfão na porta, conforme AGENTS.md. Evidência: evidencias-e2e/quality-1-auth-authz-2026-08-25.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão)."
         },
         {
           "id": "quality-2",
@@ -1025,7 +1040,7 @@
       "securityVerification": {
         "id": "quality-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "pending",
+        "status": "in_progress",
         "requiredChecks": [
           {
             "name": "SAST",
@@ -1053,11 +1068,22 @@
             "status": "pending"
           }
         ],
-        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+        "evidence": {
+          "date": "2026-08-25",
+          "agent": "pi",
+          "quality1": {
+            "SAST": "npm run verify (gate script, audit, typecheck, 58 testes, lint, build) aprovado em 2026-08-25.",
+            "SCA": "npm audit --audit-level=high: 0 vulnerabilidades.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "playwright-cli --headed contra npm run dev: acesso anônimo a /dashboard/configuracoes redireciona para /login; após login válido a mesma sub-rota fica acessível com o cookie anki_session=active; logout remove o cookie e retorna à tela de login. Evidência: evidencias-e2e/quality-1-auth-authz-2026-08-25.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão). npm run dev encerrado ao final.",
+            "API Security Testing": "Não aplicável nesta subetapa: não há endpoints de API, apenas proteção de rota via middleware/proxy client-side."
+          },
+          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-2 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
+        }
       },
       "gates": {
         "preImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredSubsteps": [
             "quality-research-code",
             "quality-research-docs",
