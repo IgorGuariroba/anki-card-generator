@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import initSqlJs from 'sql.js';
 import { buildAnkiPackage } from '@/lib/anki-package';
+import { triggerApkgDownload } from '@/lib/apkg-download';
 
 const verbs = ['make', 'do', 'take', 'get', 'have', 'give', 'put', 'set', 'go'] as const;
 const levels = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' } as const;
@@ -122,16 +123,8 @@ export default function DashboardPage() {
     try {
       const SQL = await initSqlJs({ locateFile: (file) => `/${file}` });
       const bytes = await buildAnkiPackage(generatedCards, SQL);
-      const blob = new Blob([new Uint8Array(bytes)], { type: 'application/octet-stream' });
-      const url = URL.createObjectURL(blob);
-      const fileName = `english-light-verbs-${verb || 'deck'}-${new Date().toISOString().slice(0, 10)}.apkg`;
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      const rawFileName = `english-light-verbs-${verb || 'deck'}-${new Date().toISOString().slice(0, 10)}.apkg`;
+      const { fileName } = triggerApkgDownload(bytes, rawFileName);
       setExportMessage(`Pacote ${fileName} gerado com os cards aprovados.`);
     } catch (exportFailure) {
       setExportError(exportFailure instanceof Error ? exportFailure.message : 'Falha ao gerar o pacote .apkg.');
