@@ -29,7 +29,7 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .settings-card h1 { font-size: clamp(40px, 10vw, 56px); }
 .settings-card form { display: grid; gap: 8px; text-align: left; }
 .settings-card label { font-weight: 700; margin-top: 8px; }
-.settings-card input, .settings-card select { border: 2px solid var(--color-faded-gray); border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-height: 48px; padding: 10px 12px; background: white; }
+.settings-card input:not([type="checkbox"]), .settings-card select { border: 2px solid var(--color-faded-gray); border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-height: 48px; padding: 10px 12px; background: white; }
 .settings-card input:focus, .settings-card select:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
 .settings-card button { cursor: pointer; font: inherit; margin-top: 16px; }
 .field-help { color: var(--color-pencil-gray); font-size: 14px; margin: 0 0 8px; }
@@ -49,9 +49,16 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .generation-section > form { background: #f7fbf5; border: 1px solid #e1f0dc; border-radius: 20px; padding: 20px; }
 .generated-cards { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); margin: 20px auto 0; max-width: 720px; }
 .generated-card { background: #fff; border: 1px solid #e5ebe3; border-radius: 20px; box-shadow: 0 4px 0 #e8f1e5; display: grid; gap: 10px; min-width: 0; padding: 20px; }
-.generated-card input, .generated-card textarea { background: #fff; border: 2px solid #d9e1d7; border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-width: 0; padding: 12px 14px; width: 100%; }
+.generated-card input:not([type="checkbox"]), .generated-card textarea { background: #fff; border: 2px solid #d9e1d7; border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-width: 0; padding: 12px 14px; width: 100%; }
+.approval-row { align-items: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; margin-top: 4px; }
+.approval-row .secondary-button { margin-top: 0; }
+.approve-label { align-items: center; color: var(--color-charcoal); display: inline-flex; font-size: 14px; font-weight: 700; gap: 8px; margin-top: 0; }
+.approve-label input[type="checkbox"] { appearance: none; background: #fff; block-size: 20px; border: 2px solid var(--color-faded-gray); border-radius: 6px; box-sizing: border-box; cursor: pointer; display: inline-grid; flex-shrink: 0; inline-size: 20px; margin: 0; padding: 0; place-content: center; }
+.approve-label input[type="checkbox"]:checked { background: var(--color-eager-green); border-color: var(--color-eager-green); }
+.approve-label input[type="checkbox"]:checked::after { content: ""; inline-size: 5px; block-size: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-1px); }
 .generated-card textarea { line-height: 1.4; min-height: 96px; resize: vertical; }
-.generated-card input:focus, .generated-card textarea:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
+.generated-card input:not([type="checkbox"]):focus, .generated-card textarea:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
+.approve-label input[type="checkbox"]:focus-visible { outline: 2px solid var(--color-spark-blue); outline-offset: 2px; }
 .generated-card .field-help { overflow-wrap: anywhere; }
 .generated-card > label { color: var(--color-charcoal); font-size: 14px; font-weight: 700; margin-top: 4px; }
 .generated-card .eyebrow { margin: 0; }

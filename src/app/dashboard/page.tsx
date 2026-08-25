@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [voice, setVoice] = useState('nova');
   const [accent, setAccent] = useState('americano');
   const [speed, setSpeed] = useState('1');
-  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; tags: string; notes: string; pronunciation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado' }>>([]);
+  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; tags: string; notes: string; pronunciation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado'; approved: boolean }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -67,8 +67,17 @@ export default function DashboardPage() {
       pronunciation: '',
       imageStatus: index === 0 ? 'gerada' : 'reutilizada',
       audioStatus: 'gerado',
+      approved: false,
     })));
     setGenerationHistory((history) => new Set(history).add(historyKey));
+  }
+
+  function handleDeleteCard(index: number) {
+    setGeneratedCards((cards) => cards.filter((_, itemIndex) => itemIndex !== index));
+  }
+
+  function handleToggleApproval(index: number) {
+    setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, approved: !item.approved } : item));
   }
 
   function handleRegenerateImage(index: number) {
@@ -95,6 +104,7 @@ export default function DashboardPage() {
       pronunciation: '',
       imageStatus: 'gerada' as const,
       audioStatus: 'gerado' as const,
+      approved: false,
     }))]);
     setGenerationMessage(`${missing} card(s) faltante(s) regenerado(s).`);
     setError('');
@@ -172,10 +182,19 @@ export default function DashboardPage() {
           {generatedCards.length > 0 && (
             <>
               <button className="secondary-button" type="button" onClick={handleRetryMissing}>Gerar novamente apenas os faltantes</button>
+              <p className="field-help">{generatedCards.filter((card) => card.approved).length} de {generatedCards.length} cards aprovados</p>
+              <button className="primary-button" type="button" disabled={!generatedCards.some((card) => card.approved)}>Confirmar geração final</button>
               <section aria-label="Cards gerados" className="generated-cards">
               {generatedCards.map((card, index) => (
                 <article key={`${card.sentence}-${index}`} className="generated-card">
                   <p className="eyebrow">Frase {index + 1} de 10</p>
+                  <div className="approval-row">
+                    <label className="approve-label" htmlFor={`approve-${index}`}>
+                      <input id={`approve-${index}`} type="checkbox" aria-label={`Aprovar card ${index + 1}`} checked={card.approved} onChange={() => handleToggleApproval(index)} />
+                      Aprovar card
+                    </label>
+                    <button className="secondary-button" type="button" onClick={() => handleDeleteCard(index)}>Excluir card {index + 1}</button>
+                  </div>
                   <label htmlFor={`sentence-${index}`}>Frase em inglês</label>
                   <input id={`sentence-${index}`} aria-label={`Frase em inglês do card ${index + 1}`} value={card.sentence} onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, sentence: event.target.value } : item))} />
                   <div className="audio-control">

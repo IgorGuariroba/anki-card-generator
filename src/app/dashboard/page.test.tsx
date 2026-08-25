@@ -195,6 +195,47 @@ describe('configuração de provedores', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Não há cards faltantes para regenerar.');
   });
 
+  it('permite excluir um card individual, reduzindo a quantidade exibida', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir card 1' }));
+
+    expect(screen.getAllByRole('article')).toHaveLength(9);
+    expect(screen.queryByText('Frase 10 de 10')).not.toBeInTheDocument();
+  });
+
+  it('permite aprovar um card individual sem afetar os demais', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    fireEvent.click(screen.getByLabelText('Aprovar card 1'));
+
+    expect(screen.getByLabelText('Aprovar card 1')).toBeChecked();
+    expect(screen.getByLabelText('Aprovar card 2')).not.toBeChecked();
+    expect(screen.getByText('1 de 10 cards aprovados')).toBeInTheDocument();
+  });
+
+  it('bloqueia a exportação enquanto nenhum card estiver aprovado e libera após aprovar', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getByRole('button', { name: 'Confirmar geração final' })).toBeDisabled();
+
+    fireEvent.click(screen.getByLabelText('Aprovar card 1'));
+
+    expect(screen.getByRole('button', { name: 'Confirmar geração final' })).toBeEnabled();
+  });
+
   it('rejeita geração sem verbo ou nível', () => {
     render(<DashboardPage />);
 
