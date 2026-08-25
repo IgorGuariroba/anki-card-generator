@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T02:20:00-03:00",
+  "updatedAt": "2026-08-25T02:35:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -681,7 +681,7 @@
           "status": "completed",
           "agent": "pi",
           "completedAt": "2026-08-25T01:50:00-03:00",
-          "note": "Adicionados botões de regeneração individual de imagem e áudio por card, com status atualizado para 'regenerada'/'regenerado' e sem afetar os demais 9 cards. Cobertura TDD (2 novos testes), npm run verify e validação Playwright headed aprovados. Correção em 2026-08-25T02:15:00-03:00: o áudio estava posicionado como pronúncia da tradução em português; reposicionado para logo após a frase em inglês e renomeado para 'Pronúncia do texto em inglês' / 'Áudio da frase em inglês N', deixando explícito que o áudio reproduz o inglês com voz humana configurável, não a tradução. Cobertura TDD adicional (2 testes: label correta e ausência de áudio associado à tradução), npm run verify (26 testes) e validação Playwright headed aprovados."
+          "note": "Adicionados botões de regeneração individual de imagem e áudio por card, com status atualizado para 'regenerada'/'regenerado' e sem afetar os demais 9 cards. Cobertura TDD (2 novos testes), npm run verify e validação Playwright headed aprovados. Correção em 2026-08-25T02:15:00-03:00: o áudio estava posicionado como pronúncia da tradução em português; reposicionado para logo após a frase em inglês e renomeado para 'Pronúncia do texto em inglês' / 'Áudio da frase em inglês N', deixando explícito que o áudio reproduz o inglês com voz humana configurável, não a tradução. Cobertura TDD adicional (2 testes: label correta e ausência de áudio associado à tradução), npm run verify (26 testes) e validação Playwright headed aprovados. Entregue via PR #15 (commit 848f1de, squash-merge 7686e6d na main), CI 'verify' aprovado, mergeStateStatus CLEAN antes do merge, branch remota removida na limpeza."
         },
         {
           "id": "review-4",
