@@ -183,9 +183,16 @@ export default function DashboardPage() {
   return (
     <main className="page-shell">
       <section className="settings-card" aria-labelledby="dashboard-title">
+        <nav className="flow-nav" aria-label="Navegação do fluxo">
+          <a href="#configuracoes">Configurações</a>
+          <a href="#nova-geracao">Nova geração</a>
+          <a href="#historico">Histórico</a>
+          <a href="#revisao-exportacao">Revisão e exportação</a>
+        </nav>
         <p className="eyebrow">Configurações</p>
         <h1 id="dashboard-title">Seus provedores</h1>
         <p className="hero-copy">Use suas próprias chaves para controlar os modelos e os custos da geração.</p>
+        <div id="configuracoes" className="flow-anchor" aria-hidden="true" />
         <form onSubmit={handleSubmit} noValidate>
           <label htmlFor="openrouter-key">Chave OpenRouter</label>
           <input id="openrouter-key" aria-label="Chave OpenRouter" type="password" value={openRouterKey} onChange={(event) => setOpenRouterKey(event.target.value)} autoComplete="off" />
@@ -230,7 +237,7 @@ export default function DashboardPage() {
           <button className="primary-button" type="submit">Salvar configuração</button>
         </form>
 
-        <section className="generation-section" aria-labelledby="generation-title">
+        <section id="nova-geracao" className="generation-section" aria-labelledby="generation-title">
           <p className="eyebrow">Nova sessão</p>
           <h2 id="generation-title">Gerar cards</h2>
           <p className="hero-copy">Escolha um verbo e a dificuldade para preparar 10 cards.</p>
@@ -248,7 +255,7 @@ export default function DashboardPage() {
             <button className="primary-button" type="submit">Iniciar geração</button>
           </form>
           {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
-          <section aria-label="Histórico de gerações" className="generation-history">
+          <section id="historico" aria-label="Histórico de gerações" className="generation-history">
             <h3>Histórico de gerações</h3>
             <p className="field-help">Cada geração fica armazenada por {RETENTION_DAYS} dias e então removida automaticamente, salvo exclusão antecipada.</p>
             {retainedGenerations.length === 0 && <p>Nenhuma geração dentro do período de retenção.</p>}
@@ -270,7 +277,7 @@ export default function DashboardPage() {
               <button className="primary-button" type="button" disabled={!generatedCards.some((card) => card.approved) || exporting} onClick={handleExport}>{exporting ? 'Gerando pacote…' : 'Confirmar geração final'}</button>
               {exportMessage && <p className="form-success" role="status">{exportMessage}</p>}
               {exportError && <p className="form-error" role="alert">{exportError}</p>}
-              <section aria-label="Cards gerados" className="generated-cards">
+              <section id="revisao-exportacao" aria-label="Cards gerados" className="generated-cards">
               {generatedCards.map((card, index) => (
                 <article key={`${card.sentence}-${index}`} className="generated-card">
                   <p className="eyebrow">Frase {index + 1} de 10</p>

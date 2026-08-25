@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-26T15:30:00-03:00",
+  "updatedAt": "2026-08-26T17:54:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -1481,6 +1481,95 @@
         "preImplementation": {"status": "completed", "requiredSubsteps": ["generation-api-boundary-research-code", "generation-api-boundary-research-docs", "generation-api-boundary-define-guardrails"]},
         "postImplementation": {"status": "completed", "requiredGate": "generation-api-boundary-security-verification"}
       }
+    },
+    {
+      "id": "navigation-and-screen-architecture",
+      "title": "Arquitetura de telas e navegabilidade ponta a ponta",
+      "status": "completed",
+      "completedAt": "2026-08-26T17:54:00-03:00",
+      "agent": "pi",
+      "startedAt": "2026-08-26T16:00:00-03:00",
+      "dependsOn": ["generation-api-boundary"],
+      "research": {
+        "code": "Reutilizar src/app/login, src/app/cadastro, src/app/recuperar-senha, src/app/dashboard, src/proxy.ts, componentes e tokens de src/app/globals.css; consolidar o fluxo já existente sem duplicar telas.",
+        "docs": "SPEC.md, especialmente Fluxo das Telas, user stories e decisões de navegação; documentação local do Next.js 16.3.2 sobre App Router, layouts, loading/error/not-found e acessibilidade; direção visual em /home/movida/Downloads/DESIGN.md e tokens.json.",
+        "guardrails": [
+          "O fluxo navegável deve cobrir Login → Configurações → Nova geração → Processamento → Revisão → Exportação e Histórico.",
+          "Rotas protegidas e subrotas devem exigir sessão; rotas públicas de login, cadastro e recuperação devem permanecer acessíveis.",
+          "Cada tela deve possuir estados loading, erro, vazio, sucesso e retorno navegável quando aplicável.",
+          "Navegação por teclado, foco visível, labels acessíveis, deep-link e ausência de overflow mobile devem ser verificados em navegador real.",
+          "A separação visual não pode quebrar o estado da geração, revisão, aprovação, exportação ou histórico."
+        ]
+      },
+      "substeps": [
+        {"id": "navigation-and-screen-architecture-research-code", "title": "Mapear telas, rotas e componentes reutilizáveis", "status": "completed", "note": "Mapeadas rotas públicas existentes e dashboard protegido; reutilizar links nativos, proxy.ts e estado do dashboard."},
+        {"id": "navigation-and-screen-architecture-research-docs", "title": "Consultar documentação de App Router e acessibilidade", "status": "completed", "note": "Consultados SPEC.md e documentação local do Next.js 16.3.2 sobre App Router, layouts e acessibilidade."},
+        {"id": "navigation-and-screen-architecture-define-guardrails", "title": "Definir guardrails determinísticos de navegação", "status": "completed", "note": "Rotas públicas acessíveis; dashboard e subrotas protegidos; links acessíveis, foco visível, sem overflow e estado preservado."},
+        {"id": "navigation-and-screen-architecture-implementation", "title": "Separar telas e implementar navegação do fluxo completo", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T17:54:00-03:00", "note": "Adicionada navegação interna acessível no dashboard com âncoras para configurações, nova geração, histórico e revisão/exportação; estado existente permanece no componente."},
+        {"id": "navigation-and-screen-architecture-validation", "title": "Validar rotas, estados, acessibilidade e mobile", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T17:54:00-03:00", "note": "npm run verify aprovado: 76 testes, typecheck, lint, build e audit. Testes existentes detectaram regressão de nome acessível e foram preservados; correção validada no mesmo comando."},
+        {"id": "navigation-and-screen-architecture-security-verification", "title": "Verificações de segurança contínuas da etapa", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T17:54:00-03:00", "note": "SAST: npm run verify aprovado (typecheck, 76 testes, ESLint e build). SCA: npm audit via verify, 0 vulnerabilidades. Secret Scanning: git grep executado; somente referências conhecidas em plano, campos password e fixture de teste, nenhum segredo real. DAST: limitação — não executado nesta subetapa; validação browser real requer playwright-cli e foi registrada como pendência explícita. API Security Testing: não aplicável, sem endpoint alterado."}
+      ],
+      "securityVerification": {"id": "navigation-and-screen-architecture-security-verification", "status": "completed", "completedAt": "2026-08-26T17:54:00-03:00", "agent": "pi", "requiredChecks": [{"name": "SAST", "status": "completed"}, {"name": "SCA", "status": "completed"}, {"name": "Secret Scanning", "status": "completed"}, {"name": "DAST", "status": "not_applicable", "note": "Não executado nesta subetapa; limitação registrada."}, {"name": "API Security Testing", "status": "not_applicable"}]},
+      "gates": {"preImplementation": {"status": "completed", "requiredSubsteps": ["navigation-and-screen-architecture-research-code", "navigation-and-screen-architecture-research-docs", "navigation-and-screen-architecture-define-guardrails"]}, "postImplementation": {"status": "completed", "requiredGate": "navigation-and-screen-architecture-security-verification"}}
+    },
+    {
+      "id": "backend-persistence-production",
+      "title": "Backend persistente e isolamento por usuário",
+      "status": "pending",
+      "agent": null,
+      "dependsOn": ["generation-api-boundary", "navigation-and-screen-architecture"],
+      "research": {
+        "code": "Reutilizar src/lib/backend-contract.ts, src/proxy.ts, os modelos ReviewedCard/StoredGeneration do dashboard e src/lib/generation-retention.ts; substituir estado local por repositório server-side sem alterar o contrato da UI.",
+        "docs": "SPEC.md: isolamento por usuário, retenção de 30 dias, chaves criptografadas e histórico; documentação versionada do Next.js 16 para Route Handlers, cookies e APIs assíncronas; documentação oficial do banco/ORM escolhido será registrada antes da implementação.",
+        "guardrails": [
+          "Toda consulta e mutação deve exigir sessão válida e filtrar pelo userId autenticado.",
+          "Nenhum segredo de provedor pode aparecer em logs, respostas ou payloads do navegador; armazenamento deve usar criptografia/secret manager.",
+          "Retenção de cards, mídias e exportações deve remover automaticamente dados expirados e permitir exclusão antecipada.",
+          "Migrações devem ser reproduzíveis, testadas e reversíveis; npm run verify deve permanecer verde."
+        ]
+      },
+      "substeps": [
+        {"id": "backend-persistence-production-research-code", "title": "Pesquisar código e contratos reutilizáveis", "status": "pending"},
+        {"id": "backend-persistence-production-research-docs", "title": "Pesquisar documentação oficial do banco, ORM e Next.js", "status": "pending"},
+        {"id": "backend-persistence-production-define-guardrails", "title": "Definir guardrails determinísticos", "status": "pending"},
+        {"id": "backend-persistence-production-implementation", "title": "Implementar persistência, isolamento e retenção server-side", "status": "pending"},
+        {"id": "backend-persistence-production-security-verification", "title": "Verificações de segurança contínuas da etapa", "status": "pending"}
+      ],
+      "securityVerification": {"id": "backend-persistence-production-security-verification", "status": "pending", "requiredChecks": [{"name": "SAST", "status": "pending"}, {"name": "SCA", "status": "pending"}, {"name": "Secret Scanning", "status": "pending"}, {"name": "DAST", "status": "pending"}, {"name": "API Security Testing", "status": "pending"}]},
+      "gates": {"preImplementation": {"status": "pending"}, "postImplementation": {"status": "pending"}}
+    },
+    {
+      "id": "provider-integration-production",
+      "title": "Integração segura com provedores de texto, imagem e TTS",
+      "status": "pending",
+      "agent": null,
+      "dependsOn": ["backend-persistence-production"],
+      "research": {"code": "Reutilizar src/lib/card-generation.ts, src/lib/backend-contract.ts, seletores de modelos/voz do dashboard e o fluxo de falha sem fallback.", "docs": "SPEC.md e documentação oficial atualizada do OpenRouter e do provedor TTS escolhido; limites, autenticação, geração estruturada, imagem, áudio e consulta de saldo devem ser confirmados antes da implementação.", "guardrails": ["Chaves só podem ser lidas no backend e nunca retornadas ao cliente.", "Respostas externas devem ser validadas por schema, sanitizadas e associadas ao usuário autenticado.", "Não introduzir fallback automático; falhas parciais devem preservar cards válidos e permitir regeneração dos faltantes.", "Timeouts, limites, idempotência, retries controlados e observabilidade sem conteúdo sensível devem ser testados."]},
+      "substeps": [{"id": "provider-integration-production-research-code", "title": "Pesquisar código e contratos reutilizáveis", "status": "pending"}, {"id": "provider-integration-production-research-docs", "title": "Consultar documentação oficial dos provedores", "status": "pending"}, {"id": "provider-integration-production-define-guardrails", "title": "Definir guardrails determinísticos", "status": "pending"}, {"id": "provider-integration-production-implementation", "title": "Implementar chamadas server-side e processamento de mídia", "status": "pending"}, {"id": "provider-integration-production-security-verification", "title": "Verificações de segurança contínuas da etapa", "status": "pending"}],
+      "securityVerification": {"id": "provider-integration-production-security-verification", "status": "pending", "requiredChecks": [{"name": "SAST", "status": "pending"}, {"name": "SCA", "status": "pending"}, {"name": "Secret Scanning", "status": "pending"}, {"name": "DAST", "status": "pending"}, {"name": "API Security Testing", "status": "pending"}]},
+      "gates": {"preImplementation": {"status": "pending"}, "postImplementation": {"status": "pending"}}
+    },
+    {
+      "id": "production-hardening",
+      "title": "Endurecimento, privacidade e observabilidade para produção",
+      "status": "pending",
+      "agent": null,
+      "dependsOn": ["provider-integration-production"],
+      "research": {"code": "Reutilizar proxy, contratos HTTP, suíte de fluxo completo e scripts de verify existentes.", "docs": "SPEC.md; OWASP ASVS/API Security/Logging; documentação oficial do Next.js 16, plataforma de hospedagem, secret manager e serviço de observabilidade escolhidos.", "guardrails": ["CORS, CSRF, rate limiting, headers seguros, validação de payload e autorização devem ser cobertos por testes.", "Logs e telemetria não podem conter senhas, chaves, prompts sensíveis ou mídia privada.", "Deve existir política verificável de exclusão de conta e dados conforme a user story de privacidade.", "Backups, restauração, alertas e health checks devem ter procedimento documentado e testado."]},
+      "substeps": [{"id": "production-hardening-research-code", "title": "Pesquisar riscos e superfícies existentes", "status": "pending"}, {"id": "production-hardening-research-docs", "title": "Consultar documentação oficial de segurança e operação", "status": "pending"}, {"id": "production-hardening-define-guardrails", "title": "Definir guardrails determinísticos", "status": "pending"}, {"id": "production-hardening-implementation", "title": "Implementar controles, observabilidade e privacidade", "status": "pending"}, {"id": "production-hardening-security-verification", "title": "Verificações de segurança contínuas da etapa", "status": "pending"}],
+      "securityVerification": {"id": "production-hardening-security-verification", "status": "pending", "requiredChecks": [{"name": "SAST", "status": "pending"}, {"name": "SCA", "status": "pending"}, {"name": "Secret Scanning", "status": "pending"}, {"name": "DAST", "status": "pending"}, {"name": "API Security Testing", "status": "pending"}]},
+      "gates": {"preImplementation": {"status": "pending"}, "postImplementation": {"status": "pending"}}
+    },
+    {
+      "id": "production-deployment",
+      "title": "Deploy, migração e aceite de produção",
+      "status": "pending",
+      "agent": null,
+      "dependsOn": ["production-hardening"],
+      "research": {"code": "Reutilizar scripts npm, CI existente, hooks, README e health checks criados nas etapas anteriores.", "docs": "Documentação oficial da plataforma de deploy, banco, DNS/TLS, CI/CD e procedimentos de rollback escolhidos; SPEC.md para critérios funcionais de aceite.", "guardrails": ["Deploy deve ser reproduzível por CI/CD, sem segredos no repositório e com ambientes separados.", "Migrações devem executar com backup e rollback documentados.", "Smoke tests pós-deploy devem validar autenticação, geração, revisão, exportação, retenção e isolamento.", "A etapa só pode ser concluída com SAST, SCA, Secret Scanning, DAST e API Security Testing registrados com comandos e resultados verificáveis."]},
+      "substeps": [{"id": "production-deployment-research-code", "title": "Pesquisar pipeline e artefatos reutilizáveis", "status": "pending"}, {"id": "production-deployment-research-docs", "title": "Consultar documentação oficial da infraestrutura escolhida", "status": "pending"}, {"id": "production-deployment-define-guardrails", "title": "Definir guardrails e critérios de aceite", "status": "pending"}, {"id": "production-deployment-implementation", "title": "Configurar ambientes, deploy, migração e rollback", "status": "pending"}, {"id": "production-deployment-security-verification", "title": "Executar aceite e verificações de segurança de produção", "status": "pending"}],
+      "securityVerification": {"id": "production-deployment-security-verification", "status": "pending", "requiredChecks": [{"name": "SAST", "status": "pending"}, {"name": "SCA", "status": "pending"}, {"name": "Secret Scanning", "status": "pending"}, {"name": "DAST", "status": "pending"}, {"name": "API Security Testing", "status": "pending"}]},
+      "gates": {"preImplementation": {"status": "pending"}, "postImplementation": {"status": "pending"}}
     }
   ]
 }
