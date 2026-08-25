@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T22:55:00-03:00",
+  "updatedAt": "2026-08-25T23:05:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -821,7 +821,10 @@
         {
           "id": "export-2",
           "title": "Gerar pacote .apkg com mídias incorporadas",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T22:53:00-03:00",
+          "note": "Avaliadas duas bibliotecas candidatas: genanki-js (instalação trouxe 14 vulnerabilidades via gulp/gulp-minify de devDependencies transitivas, descartada) e ankipack (0 vulnerabilidades, 4 pacotes, ESM, alvo do schema V18 do Anki, dependência opcional de sql.js). Adotado ankipack@0.3.0 + sql.js@1.x + @types/sql.js (dev). Criado src/lib/anki-package.ts com buildNotetype() (reflete src/lib/anki-template.ts sem duplicar id/campos/templates), buildAnkiPackageDocument() (monta Deck/Note/Package testavelmente, filtra somente cards aprovados e lança erro determinístico quando nenhum está aprovado) e buildAnkiPackage() (serializa para Uint8Array via sql.js). Cobertura TDD em src/lib/anki-package.test.ts (4 testes: reflexo do note-type, erro sem aprovação, .apkg válido como zip com collection.anki21b, mídia de imagem/áudio incorporada quando bytes estão disponíveis). Dashboard (src/app/dashboard/page.tsx) passou a chamar buildAnkiPackage no clique de 'Confirmar geração final', inicializando sql.js via initSqlJs({ locateFile }) e disparando o download do blob via link temporário; mensagens de sucesso/erro acessíveis adicionadas (role=status/alert). Os binários sql-wasm.wasm e sql-wasm-browser.wasm de node_modules/sql.js/dist foram copiados para public/ (necessário pois o bundler Turbopack não inlina o wasm do sql.js automaticamente; confirmado via DAST que a versão browser, sql-wasm-browser.wasm, é a exigida pelo runtime). vitest.config.ts ganhou alias '@' -> src para resolver o import '@/lib/anki-package' nos testes do dashboard (mesmo alias já configurado em tsconfig.json). npm run verify aprovado (41 testes, lint, typecheck, build, audit 0 vulnerabilidades). Limitação: os campos imageBytes/audioBytes de ReviewedCard permanecem opcionais e não preenchidos nesta etapa porque a geração real de mídia por provedor ainda não existe (etapa generation simula apenas status); a exportação hoje produz um .apkg válido com os 7 campos de texto e sem arquivos de mídia reais anexados, o que será resolvido quando a integração de provedores de imagem/áudio existir."
         },
         {
           "id": "export-3",
@@ -875,7 +878,15 @@
             "DAST": "Executado em 2026-08-25T01:33:00-03:00 via playwright-cli --headed: login em /login, redirecionamento autenticado para /dashboard, seleção make/iniciante e clique em 'Iniciar geração'. Confirmado via 'playwright-cli find' que o elemento role=img do card 1 tem aria-label 'Imagem que ilustra o significado da frase em inglês: Exemplo 1: I make something.' (nunca referenciando o campo de tradução), validando em runtime real de navegador a regra reforçada nesta subetapa a pedido do usuário. Evidências: evidencias-e2e/export-1-imagem-fixacao-2026-08-25.webm (vídeo completo do fluxo) e evidencias-e2e/export-1-card1-imagem-frase-ingles-2026-08-25.png (screenshot do card 1). Console do Next Dev Tools registrou 1 erro de desenvolvimento já conhecido de sessões anteriores, sem impedir o fluxo.",
             "API Security Testing": "Não aplicável: não há endpoint de API nesta subetapa."
           },
-          "limitation": "evidencias-e2e/ é ignorado pelo git (registrado em revisões anteriores); os arquivos desta validação existem apenas em disco local desta sessão, não no histórico do repositório. O gate pós-implementação da etapa export permanece in_progress até export-2/3/4 serem implementadas; API Security Testing da etapa continua pendente por não haver endpoints ainda."
+          "limitation": "evidencias-e2e/ é ignorado pelo git (registrado em revisões anteriores); os arquivos desta validação existem apenas em disco local desta sessão, não no histórico do repositório. O gate pós-implementação da etapa export permanece in_progress até export-3/4 serem implementadas; API Security Testing da etapa continua pendente por não haver endpoints ainda.",
+          "export2": {
+            "SAST": "npm run typecheck e npm run lint (parte de npm run verify) aprovados em 2026-08-25T22:53:00-03:00 após criar src/lib/anki-package.ts e integrar ao dashboard.",
+            "SCA": "npm audit --audit-level=high: 0 vulnerabilidades com ankipack+sql.js+@types/sql.js+jszip(dev). Registrado também que genanki-js foi avaliado e rejeitado por introduzir 14 vulnerabilidades (6 moderate, 8 high) via dependências transitivas de build (gulp, gulp-minify, terser, micromatch); comando: npm install genanki-js seguido de npm audit, depois npm uninstall genanki-js.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', aprovação do card 1, clique real em 'Confirmar geração final'. Download real interceptado pelo playwright-cli (english-light-verbs-make-2026-08-25.apkg), copiado para evidencias-e2e/ e validado com 'unzip -l' confirmando collection.anki21b/media/meta dentro do zip. Mensagem de sucesso 'Pacote ... gerado com os cards aprovados.' confirmada via role=status na página. Console sem erros após corrigir o caminho do wasm (ver nota abaixo). Evidências: evidencias-e2e/export-2-apkg-2026-08-25.webm e evidencias-e2e/export-2-apkg-sucesso-2026-08-25.png (pasta ignorada pelo git, disponível apenas em disco local desta sessão) e evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (arquivo real gerado pelo fluxo).",
+            "dast-fix": "Primeira execução do DAST revelou 404 em /sql-wasm-browser.wasm e falha de compilação wasm no navegador porque apenas dist/sql-wasm.wasm (build Node) havia sido copiado para public/; sql.js seleciona dist/sql-wasm-browser.js/.wasm em ambiente de navegador (campo 'browser' do package.json). Corrigido copiando também dist/sql-wasm-browser.wasm para public/ e reexecutando o fluxo completo, que passou a funcionar sem erros de console.",
+            "API Security Testing": "Não aplicável: a geração do .apkg ocorre inteiramente no navegador (sql.js/ankipack client-side), sem endpoint de API novo nesta subetapa."
+          }
         }
       },
       "gates": {
