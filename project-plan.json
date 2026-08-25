@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-26T10:05:00-03:00",
+  "updatedAt": "2026-08-25T10:17:30-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -977,7 +977,10 @@
         {
           "id": "quality-2",
           "title": "Testes do fluxo geração-revisão-exportação",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T10:17:30-03:00",
+          "note": "Criado src/app/dashboard/generation-review-export-flow.test.tsx (2 testes: dados editados na revisão — frase, tradução, tags, observações, pronúncia — chegam intactos e apenas para os cards aprovados em buildAnkiPackage; falha em buildAnkiPackage exibe alerta acessível e preserva os cards revisados sem chamar triggerApkgDownload). sql.js, @/lib/anki-package e @/lib/apkg-download são mockados no teste de integração porque já têm cobertura isolada dedicada em anki-package.test.ts e apkg-download.test.ts (dependem de .wasm em disco e APIs de DOM não implementadas pelo jsdom); este arquivo cobre apenas a integração de dados entre geração, revisão e exportação dentro do componente. Vermelho confirmado antes do ajuste do teste (ambiguidade de múltiplos role=status), verde depois de escopar a asserção com findAllByRole. npm run verify (60 testes, lint, typecheck, build, audit) aprovado."
         },
         {
           "id": "quality-3",
@@ -1078,7 +1081,14 @@
             "DAST": "playwright-cli --headed contra npm run dev: acesso anônimo a /dashboard/configuracoes redireciona para /login; após login válido a mesma sub-rota fica acessível com o cookie anki_session=active; logout remove o cookie e retorna à tela de login. Evidência: evidencias-e2e/quality-1-auth-authz-2026-08-25.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão). npm run dev encerrado ao final.",
             "API Security Testing": "Não aplicável nesta subetapa: não há endpoints de API, apenas proteção de rota via middleware/proxy client-side."
           },
-          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-2 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
+          "quality2": {
+            "SAST": "npm run verify (gate script, audit, typecheck, 60 testes, lint, build) aprovado em 2026-08-25T10:17-03:00, após adicionar src/app/dashboard/generation-review-export-flow.test.tsx.",
+            "SCA": "npm audit --audit-level=high (parte do verify): 0 vulnerabilidades; nenhuma dependência nova adicionada.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 110423) e encerrado ao final. playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', edição real da frase/tradução/tags/observações/pronúncia do card 1, aprovação do card 1, clique real em 'Confirmar geração final'. Download real interceptado pelo playwright-cli (english-light-verbs-make-2026-08-25.apkg), validado com 'unzip -l' confirmando collection.anki21b/media/meta dentro do zip real gerado pelo fluxo completo do navegador (sql.js/ankipack reais, sem mock). Mensagem de sucesso 'Pacote ... gerado com os cards aprovados.' confirmada via role=status. Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-2-fluxo-completo-2026-08-25.webm, evidencias-e2e/quality-2-sucesso-2026-08-25.png e evidencias-e2e/quality-2-fluxo-completo-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: geração, revisão e exportação ocorrem inteiramente no navegador/estado do componente, sem endpoint de API novo nesta subetapa."
+          },
+          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-3 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
         }
       },
       "gates": {
