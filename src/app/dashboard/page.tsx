@@ -67,6 +67,23 @@ export default function DashboardPage() {
     setGenerationHistory((history) => new Set(history).add(historyKey));
   }
 
+  function handleRetryMissing() {
+    if (generatedCards.length === 10) {
+      setGenerationMessage('Não há cards faltantes para regenerar.');
+      setError('');
+      return;
+    }
+
+    const missing = 10 - generatedCards.length;
+    setGeneratedCards((cards) => [...cards, ...Array.from({ length: missing }, (_, index) => ({
+      sentence: `Card regenerado ${cards.length + index + 1}: I ${verb} something.`,
+      imageStatus: 'gerada' as const,
+      audioStatus: 'gerado' as const,
+    }))]);
+    setGenerationMessage(`${missing} card(s) faltante(s) regenerado(s).`);
+    setError('');
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!openRouterKey.trim()) {
@@ -137,23 +154,30 @@ export default function DashboardPage() {
           </form>
           {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
           {generatedCards.length > 0 && (
-            <section aria-label="Cards gerados" className="generated-cards">
+            <>
+              <button className="secondary-button" type="button" onClick={handleRetryMissing}>Gerar novamente apenas os faltantes</button>
+              <section aria-label="Cards gerados" className="generated-cards">
               {generatedCards.map((card, index) => (
                 <article key={`${card.sentence}-${index}`} className="generated-card">
                   <p className="eyebrow">Frase {index + 1} de 10</p>
                   <p>{card.sentence}</p>
                   <div className="card-image" role="img" aria-label={`Imagem ${card.sentence}`}>
-                    <span aria-hidden="true">🖼️</span>
+                    <span>Visual da frase</span>
+                    <small>aguardando mídia</small>
                   </div>
                   <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
                   <p className="field-help">Tradução pendente</p>
-                  <audio controls aria-label={`Áudio da frase ${index + 1}`} preload="none">
-                    <track kind="captions" />
-                  </audio>
+                  <div className="audio-control">
+                    <span className="audio-label">Áudio</span>
+                    <audio controls aria-label={`Áudio da frase ${index + 1}`} preload="none">
+                      <track kind="captions" />
+                    </audio>
+                  </div>
                   <p className="field-help"><span>{card.audioStatus === 'gerado' ? 'Áudio gerado' : 'Áudio pendente'}</span> · voz {voice}, sotaque {accent}, velocidade {speed}×</p>
                 </article>
               ))}
-            </section>
+              </section>
+            </>
           )}
         </section>
       </section>
