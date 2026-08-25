@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T19:59:00-03:00",
+  "updatedAt": "2026-08-24T21:06:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -435,7 +435,10 @@
         {
           "id": "generation-4",
           "title": "Validar frases e evitar duplicidades pelo histórico",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T20:54:20-03:00",
+          "note": "Histórico da sessão impede repetir a combinação de verbo e nível, preserva os 10 cards existentes e informa erro acessível; cobertura TDD adicionada."
         },
         {
           "id": "generation-5",
@@ -484,7 +487,9 @@
             "status": "pending"
           }
         ],
-        "evidence": "Verificações contínuas iniciadas; SAST, SCA, Secret Scanning, DAST e API Security Testing serão registrados antes da conclusão."
+        "evidence": "SAST: npx eslint .pi/extensions/project-report.ts e npm run verify aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves, nenhum segredo real. DAST e API Security Testing: não aplicáveis, pois a extensão é local e não expõe aplicação ou endpoints.",
+        "agent": "pi",
+        "completedAt": "2026-08-24T21:06:00-03:00"
       },
       "gates": {
         "preImplementation": {
@@ -510,6 +515,50 @@
           "A ação de iniciar geração deve impedir submissão sem verbo e nível e informar erro determinístico.",
           "npm test, npm run lint, npm run typecheck e npm run build devem permanecer verdes."
         ]
+      }
+    },
+    {
+      "id": "pi-reporting",
+      "title": "Governança automática de relatórios no pi",
+      "status": "completed",
+      "completedAt": "2026-08-24T21:06:00-03:00",
+      "agent": "pi",
+      "dependsOn": ["foundation"],
+      "research": {
+        "code": "Não havia extensão local .pi; a integração será independente do Next.js e lerá project-plan.json, git diff e comandos da sessão.",
+        "docs": "Documentação local do pi: docs/extensions.md; eventos agent_settled, before_agent_start e tool_call; extensões locais em .pi/extensions/.",
+        "guardrails": [
+          "A extensão nunca deve afirmar que um teste foi executado sem evidência registrada no project-plan.json ou na sessão.",
+          "O comando /report deve gerar relatório com etapa, arquivos alterados, guardrails, documentação, testes e limitações.",
+          "Ao finalizar o agente, a extensão deve alertar quando a etapa ou securityVerification estiver incompleta.",
+          "A extensão não deve bloquear ferramentas destrutivas nem alterar o código da aplicação.",
+          "npm run verify deve permanecer verde."
+        ]
+      },
+      "substeps": [
+        {"id": "pi-reporting-research-code", "title": "Pesquisar código afetado e oportunidades de reaproveitamento", "status": "completed"},
+        {"id": "pi-reporting-research-docs", "title": "Pesquisar documentação oficial do pi", "status": "completed"},
+        {"id": "pi-reporting-define-guardrails", "title": "Definir guardrails determinísticos", "status": "completed"},
+        {"id": "pi-reporting-1", "title": "Implementar extensão de cobrança e comando /report", "status": "completed", "agent": "pi", "completedAt": "2026-08-24T21:06:00-03:00", "note": "Extensão local .pi/extensions/project-report.ts adicionada com lembrete before_agent_start, validação agent_settled e comando /report."}
+      ],
+      "securityVerification": {
+        "id": "pi-reporting-security-verification",
+        "title": "Verificação de segurança da extensão",
+        "status": "completed",
+        "requiredChecks": [
+          {"name": "SAST", "status": "completed"},
+          {"name": "SCA", "status": "not_applicable"},
+          {"name": "Secret Scanning", "status": "completed"},
+          {"name": "DAST", "status": "not_applicable"},
+          {"name": "API Security Testing", "status": "not_applicable"}
+        ],
+        "evidence": "SAST: npx eslint .pi/extensions/project-report.ts e npm run verify aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves, nenhum segredo real. DAST e API Security Testing: não aplicáveis, pois a extensão é local e não expõe aplicação ou endpoints.",
+        "agent": "pi",
+        "completedAt": "2026-08-24T21:06:00-03:00"
+      },
+      "gates": {
+        "preImplementation": {"status": "completed", "requiredSubsteps": ["pi-reporting-research-code", "pi-reporting-research-docs", "pi-reporting-define-guardrails"]},
+        "postImplementation": {"status": "completed", "requiredGate": "pi-reporting-security-verification"}
       }
     },
     {

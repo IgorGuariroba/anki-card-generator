@@ -38,6 +38,7 @@ export default function DashboardPage() {
   const [level, setLevel] = useState('');
   const [generationMessage, setGenerationMessage] = useState('');
   const [generatedCards, setGeneratedCards] = useState<string[]>([]);
+  const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,10 +47,17 @@ export default function DashboardPage() {
       setError('Selecione um verbo e um nível.');
       return;
     }
+    const historyKey = `${verb}:${level}`;
+    if (generationHistory.has(historyKey)) {
+      setGenerationMessage('');
+      setError('Essa combinação já foi gerada nesta sessão.');
+      return;
+    }
     setError('');
     const difficulty = levels[level as keyof typeof levels].toLowerCase();
     setGenerationMessage(`Geração iniciada para ${verb} no nível ${difficulty}.`);
     setGeneratedCards(Array.from({ length: 10 }, (_, index) => `Exemplo ${index + 1}: I ${verb} something.`));
+    setGenerationHistory((history) => new Set(history).add(historyKey));
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
