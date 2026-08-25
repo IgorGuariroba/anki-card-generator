@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T22:07:00-03:00",
+  "updatedAt": "2026-08-25T22:55:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -638,7 +638,8 @@
     {
       "id": "review",
       "title": "Revisão e edição",
-      "status": "in_progress",
+      "status": "completed",
+      "completedAt": "2026-08-25T22:20:00-03:00",
       "agent": "pi",
       "dependsOn": [
         "generation"
@@ -694,13 +695,18 @@
         {
           "id": "review-5",
           "title": "Excluir e aprovar cards",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T22:20:00-03:00",
+          "note": "Adicionados checkbox 'Aprovar card N' e botão 'Excluir card N' por card. O botão 'Confirmar geração final' fica desabilitado enquanto nenhum card estiver aprovado e habilita ao aprovar ao menos um; um contador 'X de 10 cards aprovados' foi adicionado. Exclusão remove apenas o card selecionado, sem afetar os demais. 3 novos testes TDD (vermelho confirmado antes da implementação) e npm run verify (30 testes, lint, typecheck, build) aprovados. Correção de UI em 2026-08-25T22:35:00-03:00: o checkbox nativo estava sem estilo (herdando o CSS genérico de 'generated-card input', que aplicava padding, borda e largura 100% pensados para inputs de texto, deixando a caixa enorme e fora do padrão visual). Adicionado seletor de exclusão `:not([type=\"checkbox\"])` na regra genérica de inputs do card e novas classes `.approval-row` e `.approve-label` em globals.css: checkbox agora tem 20x20px, `accent-color` na cor --color-eager-green (verde do design system) e fica alinhado na mesma linha do botão 'Excluir card N', com espaçamento consistente com os demais controles. npm run verify reexecutado (30 testes, lint, typecheck, build) e validado visualmente com playwright-cli --headed (screenshots evidencias-e2e/review-5-ui-fix-card6-2026-08-25.png e evidencias-e2e/review-5-ui-fix-card6-checked-2026-08-25.png, vídeo evidencias-e2e/review-5-ui-fix-2026-08-24.webm). Segunda correção de UI em 2026-08-25T22:45:00-03:00: o anel de foco (`outline`) do checkbox estava herdando `.generated-card input:focus { outline: 2px solid var(--color-spark-blue) }`, cuja regra assumia o padding/box-sizing de inputs de texto e produzia um halo azul desproporcional ao redor da caixa de 20px. Excluído `input[type=\"checkbox\"]` dessa regra de foco em globals.css e adicionada regra dedicada `.approve-label input[type=\"checkbox\"]:focus-visible { outline: 2px solid var(--color-spark-blue); outline-offset: 2px; }`, mantendo o mesmo token de cor de foco do restante da aplicação, porém com contorno proporcional ao tamanho real do checkbox. npm run verify reexecutado (30 testes, lint, typecheck, build) e validado visualmente via playwright-cli --headed com foco programático (`el.focus()`) no checkbox do card 6 (screenshot evidencias-e2e/review-5-focus-fix-card6-2026-08-25.png, vídeo evidencias-e2e/review-5-focus-fix-2026-08-24.webm). Terceira correção de UI em 2026-08-25T22:55:00-03:00: mesmo após as correções anteriores o checkbox continuava esticado verticalmente (retangular), porque o dashboard fica dentro de `.settings-card` e a regra `.settings-card input, .settings-card select { min-height: 48px; padding: 10px 12px; }` também alcançava o checkbox, competindo com o tamanho fixo de 20px definido em `.approve-label input[type=\"checkbox\"]`. Além disso o estilo nativo do navegador (`accent-color`) não garante forma quadrada consistente entre browsers. Corrigido em duas partes: (1) excluído `input[type=\"checkbox\"]` também da regra `.settings-card input`/`select` (`:not([type=\"checkbox\"])`); (2) o checkbox passou a ser customizado com `appearance: none`, caixa 20x20px com `border-radius: 6px`, borda em `--color-faded-gray`, preenchimento em `--color-eager-green` e marca de seleção desenhada via `::after` (checkmark em CSS puro, sem imagem/ícone externo), preservando os mesmos tokens de cor do design system. npm run verify reexecutado (30 testes, lint, typecheck, build) e validado visualmente via playwright-cli --headed nos estados desmarcado, marcado e com foco programático (`el.focus()`): screenshots evidencias-e2e/review-5-checkbox-custom-unchecked-2026-08-25.png (ainda retangular, antes da 2ª parte da correção), evidencias-e2e/review-5-checkbox-custom-fixed-2026-08-25.png (quadrado, desmarcado), evidencias-e2e/review-5-checkbox-custom-checked-2026-08-25.png (quadrado, marcado) e evidencias-e2e/review-5-checkbox-custom-focus-2026-08-25.png (foco proporcional); vídeo evidencias-e2e/review-5-checkbox-custom-2026-08-24.webm."
         }
       ],
       "securityVerification": {
         "id": "review-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "in_progress",
+        "status": "completed",
+        "completedAt": "2026-08-25T22:20:00-03:00",
+        "agent": "pi",
         "requiredChecks": [
           {
             "name": "SAST",
@@ -736,7 +742,8 @@
           "Secret Scanning": "git grep -nE por padrões de chaves/privadas executado após review-3; nenhum segredo real. Ocorrências são nomes de campos password e fixture explícita sk-or-v1-example-secret usada para testar não exposição.",
           "DAST": "playwright-cli headed executado em 2026-08-25 para review-3: login, dashboard, geração make/iniciante, clique em 'Regenerar imagem do card 1' e 'Regenerar áudio do card 1' (exact:true para evitar ambiguidade com card 10), confirmação via find e screenshot. Evidências: evidencias-e2e/review-3-regenerate-2026-08-25.webm e evidencias-e2e/review-3-regenerate-2026-08-25.png. Nova rodada em 2026-08-25T02:15:00-03:00 após correção do áudio (agora associado ao inglês, não à tradução): login, dashboard, geração make/iniciante, confirmação via find de que o bloco de áudio 'Pronúncia do texto em inglês'/'Áudio da frase em inglês N' aparece logo após o campo de frase em inglês e antes da tradução. Evidências: evidencias-e2e/review-3-audio-fix-2026-08-25.webm e evidencias-e2e/review-3-audio-fix-2026-08-25.png. Console do Next Dev Tools registrou erro de desenvolvimento já conhecido, sem impedir o fluxo. Anterior (review-2): evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e .png.",
           "API Security Testing": "Não aplicável nesta subetapa: não houve alteração de endpoints/API.",
-          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras. review-5 ainda está pendente, então o gate postImplementation da etapa review permanece pending até a etapa ser concluída por completo.",
+          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras.",
+          "review5": "SAST: npm run verify em 2026-08-25T22:20:00-03:00, com 30 testes, lint, typecheck e build aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves/privadas, sem segredo real. DAST: playwright-cli --headed: login, /dashboard, geração make/iniciante, aprovação do card 1 (contador '1 de 10 cards aprovados' e botão 'Confirmar geração final' habilitado após aprovar, desabilitado antes), exclusão do card 2 (confirmado via find que 'Frase 10' deixou de existir e 'Frase 9' é o último). Evidências em evidencias-e2e/review-5-approve-delete-2026-08-25.png e evidencias-e2e/review-5-approve-delete-2026-08-24.webm (pasta ignorada pelo git; disponíveis apenas no disco local desta sessão). API Security Testing: não aplicável, sem endpoints de API.",
           "review4": "SAST: npm run verify executado em 2026-08-25T22:09:05-03:00, com typecheck, 27 testes, lint e build aprovados. SCA: npm audit --audit-level=high executado pelo verify, 0 vulnerabilidades. Secret Scanning: git grep executado; resultados limitados a nomes de campos password, histórico do plano e fixture explícita sk-or-v1-example-secret, sem segredo real. DAST: não executado nesta subetapa; requer validação visual/browser e permanece como limitação registrada até a conclusão da etapa. API Security Testing: não aplicável, pois não houve alteração de endpoints/API.",
           "repository-governance": "Em 2026-08-25T03:05:00-03:00 a pasta evidencias-e2e/ passou a ser ignorada pelo git: adicionada a .gitignore e removida do índice (commit f787335, PR #17, merge a24f746 na main). ATENÇÃO: apesar da intenção de preservar os arquivos em disco via 'git rm -r --cached', o squash-merge remoto registrou a deleção real dos blobs; o 'git pull --ff-only' subsequente na main local apagou fisicamente os arquivos de evidencias-e2e/ do disco. Portanto os caminhos de evidência citados neste securityVerification (ex.: review-3-audio-fix-2026-08-25.webm/png, review-3-regenerate-2026-08-25.webm/png) NÃO estão mais disponíveis localmente nem no histórico atual da main; permanecem apenas como referência histórica no relatório da sessão em que foram gerados e capturados via playwright-cli. Confirmado com 'git status' e 'find' após o merge: pasta vazia. A partir de agora, novos arquivos criados em evidencias-e2e/ são corretamente ignorados pelo git (validado criando e removendo um arquivo de teste), mas não há mecanismo de backup automatico; evidências futuras exigem cópia manual fora do repositório se precisarem sobreviver a operações de checkout/pull destrutivas."
         }
@@ -751,7 +758,7 @@
           ]
         },
         "postImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredGate": "review-security-verification"
         }
       },
