@@ -49,8 +49,9 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .generation-section > form { background: #f7fbf5; border: 1px solid #e1f0dc; border-radius: 20px; padding: 20px; }
 .generated-cards { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); margin: 20px auto 0; max-width: 720px; }
 .generated-card { background: #fff; border: 1px solid #e5ebe3; border-radius: 20px; box-shadow: 0 4px 0 #e8f1e5; display: grid; gap: 10px; min-width: 0; padding: 20px; }
-.generated-card input { background: #fff; border: 2px solid #d9e1d7; border-radius: var(--radius-control); font: inherit; min-width: 0; padding: 12px 14px; width: 100%; }
-.generated-card input:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
+.generated-card input, .generated-card textarea { background: #fff; border: 2px solid #d9e1d7; border-radius: var(--radius-control); color: var(--color-charcoal); font: inherit; min-width: 0; padding: 12px 14px; width: 100%; }
+.generated-card textarea { line-height: 1.4; min-height: 96px; resize: vertical; }
+.generated-card input:focus, .generated-card textarea:focus { border-color: var(--color-spark-blue); outline: 2px solid var(--color-spark-blue); }
 .generated-card .field-help { overflow-wrap: anywhere; }
 .generated-card > label { color: var(--color-charcoal); font-size: 14px; font-weight: 700; margin-top: 4px; }
 .generated-card .eyebrow { margin: 0; }
