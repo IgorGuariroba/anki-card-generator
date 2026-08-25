@@ -30,6 +30,13 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .field-help { color: var(--color-pencil-gray); font-size: 14px; margin: 0 0 8px; }
 .model-picker { display: grid; gap: 8px; }
 .model-picker input { width: 100%; }
+.audio-settings { border: 1px solid var(--color-faded-gray); border-radius: var(--radius-control); display: grid; gap: 8px 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin: 8px 0 4px; padding: 18px 16px 16px; }
+.audio-settings legend { color: var(--color-charcoal); font-weight: 700; padding: 0 6px; }
+.audio-settings label { margin-top: 0; white-space: nowrap; }
+.audio-settings select { width: 100%; }
+@media (max-width: 600px) {
+  .audio-settings { grid-template-columns: 1fr 1fr; }
+}
 .model-options { display: grid; gap: 4px; }
 .model-options button { background: white; border: 1px solid var(--color-faded-gray); border-radius: var(--radius-control); color: var(--color-charcoal); cursor: pointer; font: inherit; padding: 10px 12px; text-align: left; }
 .model-options button:hover, .model-options button[aria-selected="true"] { background: var(--color-storybook-green); border-color: var(--color-eager-green); }

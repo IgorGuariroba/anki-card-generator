@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T21:12:00-03:00",
+  "updatedAt": "2026-08-24T21:24:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -451,7 +451,10 @@
         {
           "id": "generation-6",
           "title": "Gerar áudio com voz configurável",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T21:18:10-03:00",
+          "note": "Dashboard passou a oferecer voz, sotaque e velocidade configuráveis e renderiza controles de áudio acessíveis nos 10 cards. Layout do fieldset foi ajustado após avaliação Playwright CLI para alinhar rótulos e controles em desktop e manter responsividade mobile. Evidências: evidencias-e2e/dashboard-desktop-review-fixed.png, evidencias-e2e/dashboard-mobile-review-fixed.png e evidencias-e2e/dashboard-ui-review-2026-08-24.webm. A geração real por provedor permanece limitada à integração de backend. npm run verify aprovado em 2026-08-24."
         },
         {
           "id": "generation-7",
@@ -493,6 +496,7 @@
         "evidence": {
           "date": "2026-08-24",
           "agent": "pi",
+          "generation-6": "npm run verify executado após a implementação: 21 testes aprovados, lint, typecheck e build aprovados.",
           "SAST": {
             "status": "completed",
             "commands": [
