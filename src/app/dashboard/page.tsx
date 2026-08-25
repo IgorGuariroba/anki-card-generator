@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import initSqlJs from 'sql.js';
 import { buildAnkiPackage } from '@/lib/anki-package';
 import { triggerApkgDownload } from '@/lib/apkg-download';
+import { pruneExpiredGenerations, removeGeneration, RETENTION_DAYS, type StoredGeneration } from '@/lib/generation-retention';
 
 const verbs = ['make', 'do', 'take', 'get', 'have', 'give', 'put', 'set', 'go'] as const;
 const levels = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' } as const;
@@ -45,9 +46,15 @@ export default function DashboardPage() {
   const [speed, setSpeed] = useState('1');
   const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; tags: string; notes: string; pronunciation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado'; approved: boolean }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
+  const [storedGenerations, setStoredGenerations] = useState<StoredGeneration[]>([]);
   const [exportError, setExportError] = useState('');
   const [exportMessage, setExportMessage] = useState('');
   const [exporting, setExporting] = useState(false);
+  const retainedGenerations = pruneExpiredGenerations(storedGenerations, new Date());
+
+  function handleDeleteGeneration(id: string) {
+    setStoredGenerations((generations) => removeGeneration(generations, id));
+  }
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,6 +83,10 @@ export default function DashboardPage() {
       approved: false,
     })));
     setGenerationHistory((history) => new Set(history).add(historyKey));
+    setStoredGenerations((generations) => [
+      ...generations,
+      { id: `${historyKey}:${Date.now()}`, verb, level, fileName: `english-light-verbs-${verb}.apkg`, generatedAt: new Date().toISOString() },
+    ]);
   }
 
   function handleDeleteCard(index: number) {
@@ -202,6 +213,21 @@ export default function DashboardPage() {
             <button className="primary-button" type="submit">Iniciar geração</button>
           </form>
           {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
+          <section aria-label="Histórico de gerações" className="generation-history">
+            <h3>Histórico de gerações</h3>
+            <p className="field-help">Cada geração fica armazenada por {RETENTION_DAYS} dias e então removida automaticamente, salvo exclusão antecipada.</p>
+            {retainedGenerations.length === 0 && <p>Nenhuma geração dentro do período de retenção.</p>}
+            {retainedGenerations.length > 0 && (
+              <ul>
+                {retainedGenerations.map((generation) => (
+                  <li key={generation.id}>
+                    <span>{`${generation.verb} · ${generation.level} · ${new Date(generation.generatedAt).toLocaleDateString('pt-BR')}`}</span>
+                    <button className="secondary-button" type="button" onClick={() => handleDeleteGeneration(generation.id)}>{`Excluir geração de ${generation.verb} no nível ${generation.level}`}</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
           {generatedCards.length > 0 && (
             <>
               <button className="secondary-button" type="button" onClick={handleRetryMissing}>Gerar novamente apenas os faltantes</button>

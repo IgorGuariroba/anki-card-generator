@@ -257,6 +257,24 @@ describe('configuração de provedores', () => {
     expect(screen.getByRole('button', { name: 'Confirmar geração final' })).toBeEnabled();
   });
 
+  it('registra a geração no histórico com data e permite excluí-la manualmente antes dos 30 dias', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    const historySection = screen.getByRole('region', { name: 'Histórico de gerações' });
+    const entry = within(historySection).getByRole('listitem');
+    expect(within(entry).getByText(/make · iniciante/)).toBeInTheDocument();
+    expect(within(historySection).getByText(/armazenad[ao] por 30 dias/)).toBeInTheDocument();
+
+    fireEvent.click(within(historySection).getByRole('button', { name: /Excluir geração/ }));
+
+    expect(within(historySection).queryByRole('listitem')).not.toBeInTheDocument();
+    expect(within(historySection).getByText('Nenhuma geração dentro do período de retenção.')).toBeInTheDocument();
+  });
+
   it('rejeita geração sem verbo ou nível', () => {
     render(<DashboardPage />);
 
