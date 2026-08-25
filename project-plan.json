@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T23:05:00-03:00",
+  "updatedAt": "2026-08-25T23:12:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -829,7 +829,10 @@
         {
           "id": "export-3",
           "title": "Disponibilizar download compatível com celular",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T23:12:00-03:00",
+          "note": "Extraído o disparo de download do handleExport para o módulo puro src/lib/apkg-download.ts (triggerApkgDownload + sanitizeApkgFileName), reutilizando URL.createObjectURL/<a download> já usados no dashboard. Pesquisa: WebKit bug 216918 documenta que WKWebViews embutidos ignoram o atributo download em URLs blob:, sem feature-detection confiável em runtime; guardrail adotado foi tornar o nome de arquivo seguro em qualquer sistema de arquivos móvel (remover espaços e caracteres reservados / \\ : * ? \" < > |, preservando a extensão .apkg), documentado como limitação já prevista em SPEC.md linha 79 (não é possível garantir download automático em todos os sistemas móveis/WebViews de terceiros). Cobertura TDD em src/lib/apkg-download.test.ts (4 testes: nome já seguro mantido, espaços/caracteres reservados sanitizados, extensão .apkg garantida, blob criado/clicado/revogado com nome sanitizado). src/app/dashboard/page.tsx passou a importar e usar triggerApkgDownload no handleExport, sem alterar mensagens de sucesso/erro existentes nem os testes de disabled/enabled do botão 'Confirmar geração final'."
         },
         {
           "id": "export-4",
@@ -887,7 +890,14 @@
             "dast-fix": "Primeira execução do DAST revelou 404 em /sql-wasm-browser.wasm e falha de compilação wasm no navegador porque apenas dist/sql-wasm.wasm (build Node) havia sido copiado para public/; sql.js seleciona dist/sql-wasm-browser.js/.wasm em ambiente de navegador (campo 'browser' do package.json). Corrigido copiando também dist/sql-wasm-browser.wasm para public/ e reexecutando o fluxo completo, que passou a funcionar sem erros de console.",
             "API Security Testing": "Não aplicável: a geração do .apkg ocorre inteiramente no navegador (sql.js/ankipack client-side), sem endpoint de API novo nesta subetapa."
           },
-          "export2-delivery": "Entrega via Git em 2026-08-25: branch feat/export-apkg-package, commit local 3f4d3db10373139d070f06940f2f7f2165b00f71 (SHA local == SHA remoto confirmado via git rev-parse HEAD e git ls-remote). Hooks pre-commit e pre-push executaram npm run verify com sucesso antes de cada operação. PR #23 (https://github.com/IgorGuariroba/anki-card-generator/pull/23). CI 'verify' (run 32799505738) concluiu com sucesso em 44s. mergeStateStatus=CLEAN e mergeable=MERGEABLE confirmados antes do merge (gh pr view --json mergeStateStatus,mergeable). Squash-merge via gh pr merge 23 --squash --delete-branch; PR state=MERGED, mergeCommit=738d4da14446f1ac8928fd693d9359fda24777e2. Branch remota removida (confirmado via git fetch --prune). main local sincronizada via git pull --ff-only (git log --oneline -1 == 738d4da). npm run verify reexecutado na main pós-merge: aprovado."
+          "export2-delivery": "Entrega via Git em 2026-08-25: branch feat/export-apkg-package, commit local 3f4d3db10373139d070f06940f2f7f2165b00f71 (SHA local == SHA remoto confirmado via git rev-parse HEAD e git ls-remote). Hooks pre-commit e pre-push executaram npm run verify com sucesso antes de cada operação. PR #23 (https://github.com/IgorGuariroba/anki-card-generator/pull/23). CI 'verify' (run 32799505738) concluiu com sucesso em 44s. mergeStateStatus=CLEAN e mergeable=MERGEABLE confirmados antes do merge (gh pr view --json mergeStateStatus,mergeable). Squash-merge via gh pr merge 23 --squash --delete-branch; PR state=MERGED, mergeCommit=738d4da14446f1ac8928fd693d9359fda24777e2. Branch remota removida (confirmado via git fetch --prune). main local sincronizada via git pull --ff-only (git log --oneline -1 == 738d4da). npm run verify reexecutado na main pós-merge: aprovado.",
+          "export3": {
+            "SAST": "npm run verify (typecheck, 45 testes incluindo os 4 novos de src/lib/apkg-download.test.ts, lint, build, audit) aprovado em 2026-08-25T23:12:00-03:00 após criar src/lib/apkg-download.ts e integrar ao dashboard.",
+            "SCA": "npm audit --audit-level=high (parte do verify): 0 vulnerabilidades; nenhuma dependência nova adicionada (módulo usa apenas APIs nativas do navegador).",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "playwright-cli com emulação de dispositivo móvel (--device=\"iPhone 15\"): login, /dashboard, seleção make/iniciante, 'Iniciar geração', aprovação do card 1, clique real em 'Confirmar geração final'. Evento de download real interceptado pelo playwright-cli com nome de arquivo sanitizado 'english-light-verbs-make-2026-08-25.apkg' (sem espaços), copiado para evidencias-e2e/ e validado com 'unzip -l' confirmando collection.anki21b/media/meta dentro do zip. Mensagem de sucesso 'Pacote ... gerado com os cards aprovados.' confirmada via role=status. Console sem erros (playwright-cli console: 0 errors, 0 warnings). Evidência: evidencias-e2e/export-3-mobile-download-2026-08-25.webm e evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: o download continua ocorrendo inteiramente no navegador (sem endpoint de API novo nesta subetapa)."
+          }
         }
       },
       "gates": {
