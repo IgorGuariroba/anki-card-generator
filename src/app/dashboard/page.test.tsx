@@ -110,6 +110,17 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByRole('article')).toHaveLength(10);
   });
 
+  it('informa quando não há cards faltantes para regenerar', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Gerar novamente apenas os faltantes' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Não há cards faltantes para regenerar.');
+  });
+
   it('rejeita geração sem verbo ou nível', () => {
     render(<DashboardPage />);
 
