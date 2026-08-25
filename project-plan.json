@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T23:12:00-03:00",
+  "updatedAt": "2026-08-25T23:30:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -778,7 +778,8 @@
     {
       "id": "export",
       "title": "Exportação para Anki",
-      "status": "in_progress",
+      "status": "completed",
+      "completedAt": "2026-08-25T23:30:00-03:00",
       "agent": "pi",
       "dependsOn": [
         "review"
@@ -837,13 +838,18 @@
         {
           "id": "export-4",
           "title": "Manter arquivos por 30 dias e permitir exclusão",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T23:25:00-03:00",
+          "note": "Criado src/lib/generation-retention.ts (funções puras isWithinRetention, pruneExpiredGenerations e removeGeneration, RETENTION_DAYS=30) cobrindo SPEC.md linha 80 (armazenamento por 30 dias com remoção automática, salvo exclusão antecipada) e linha 131 (histórico de gerações dentro dos 30 dias). Como o projeto ainda não possui backend/banco de dados, a retenção foi implementada como histórico local no dashboard (src/app/dashboard/page.tsx): cada geração bem-sucedida cria um registro StoredGeneration com verbo, nível, nome de arquivo e generatedAt (ISO), exibido em nova seção acessível 'Histórico de gerações' (role=region) que aplica pruneExpiredGenerations a cada renderização (usando new Date() real) e oferece botão 'Excluir geração de {verbo} no nível {nível}' por item, chamando removeGeneration. Cobertura TDD: 7 testes em src/lib/generation-retention.test.ts (limite inclusivo de 30 dias, expiração, prune preservando ordem, remoção por id preservando os demais) e 1 novo teste em src/app/dashboard/page.test.tsx ('registra a geração no histórico com data e permite excluí-la manualmente antes dos 30 dias'), vermelho confirmado antes da implementação (import inexistente / região não encontrada), verde depois. npm run verify aprovado (53 testes, lint, typecheck, build). Limitação: sem backend, a exclusão automática por expiração de 30 dias é recalculada a cada renderização em vez de um job agendado, e o histórico não persiste entre sessões do navegador (mesma limitação já registrada para chaves/cards nas etapas providers e review); a persistência real fica para a futura integração de backend, reutilizando as mesmas funções puras de generation-retention.ts."
         }
       ],
       "securityVerification": {
         "id": "export-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "in_progress",
+        "status": "completed",
+        "completedAt": "2026-08-25T23:30:00-03:00",
+        "agent": "pi",
         "requiredChecks": [
           {
             "name": "SAST",
@@ -868,7 +874,7 @@
           {
             "name": "API Security Testing",
             "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
-            "status": "pending"
+            "status": "not_applicable"
           }
         ],
         "evidence": {
@@ -898,7 +904,15 @@
             "DAST": "playwright-cli com emulação de dispositivo móvel (--device=\"iPhone 15\"): login, /dashboard, seleção make/iniciante, 'Iniciar geração', aprovação do card 1, clique real em 'Confirmar geração final'. Evento de download real interceptado pelo playwright-cli com nome de arquivo sanitizado 'english-light-verbs-make-2026-08-25.apkg' (sem espaços), copiado para evidencias-e2e/ e validado com 'unzip -l' confirmando collection.anki21b/media/meta dentro do zip. Mensagem de sucesso 'Pacote ... gerado com os cards aprovados.' confirmada via role=status. Console sem erros (playwright-cli console: 0 errors, 0 warnings). Evidência: evidencias-e2e/export-3-mobile-download-2026-08-25.webm e evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
             "API Security Testing": "Não aplicável: o download continua ocorrendo inteiramente no navegador (sem endpoint de API novo nesta subetapa)."
           },
-          "export3-delivery": "Entrega via Git em 2026-08-25: branch feat/export-mobile-download, commit local e remoto 4893382 (hooks pre-commit executaram npm run verify com sucesso). PR #25 (https://github.com/IgorGuariroba/anki-card-generator/pull/25). CI 'verify' (run 32800452605) concluiu com sucesso (gh pr checks 25: verify pass, 47s). mergeStateStatus=CLEAN e mergeable=MERGEABLE confirmados antes do merge (gh pr view --json mergeStateStatus,mergeable). Squash-merge via gh pr merge 25 --squash --delete-branch; PR state=MERGED, mergeCommit=1cd6d10010c8d1e010820eb706384e7d16b1f8bc. Branch remota removida. main local sincronizada via git pull --ff-only (git log --oneline -1 == 1cd6d10). npm run verify reexecutado na main pós-merge: aprovado."
+          "export3-delivery": "Entrega via Git em 2026-08-25: branch feat/export-mobile-download, commit local e remoto 4893382 (hooks pre-commit executaram npm run verify com sucesso). PR #25 (https://github.com/IgorGuariroba/anki-card-generator/pull/25). CI 'verify' (run 32800452605) concluiu com sucesso (gh pr checks 25: verify pass, 47s). mergeStateStatus=CLEAN e mergeable=MERGEABLE confirmados antes do merge (gh pr view --json mergeStateStatus,mergeable). Squash-merge via gh pr merge 25 --squash --delete-branch; PR state=MERGED, mergeCommit=1cd6d10010c8d1e010820eb706384e7d16b1f8bc. Branch remota removida. main local sincronizada via git pull --ff-only (git log --oneline -1 == 1cd6d10). npm run verify reexecutado na main pós-merge: aprovado.",
+          "export4": {
+            "SAST": "npm run verify (typecheck, 53 testes incluindo os 7 novos de src/lib/generation-retention.test.ts e o novo teste de histórico em src/app/dashboard/page.test.tsx, lint, build) aprovado em 2026-08-25T23:19:36-03:00.",
+            "SCA": "npm audit --audit-level=high executado em 2026-08-25T23:19:44-03:00: 0 vulnerabilidades; nenhuma dependência nova adicionada (módulo usa apenas Date nativo).",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json, executado em 2026-08-25T23:19:50-03:00: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "playwright-cli --headed contra npm run dev (pid 893135, http://localhost:3000): login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', confirmado via find que a seção role=region 'Histórico de gerações' exibe 'make · iniciante · 24/08/2026' e o texto de retenção de 30 dias; clique real em 'Excluir geração de make no nível iniciante' confirmado via find removendo o item e exibindo 'Nenhuma geração dentro do período de retenção.'; playwright-cli console reportou 0 erros e 0 avisos após a interação. Evidências: evidencias-e2e/export-4-retencao-2026-08-25.webm, evidencias-e2e/export-4-historico-2026-08-25.png e evidencias-e2e/export-4-historico-vazio-2026-08-25.png (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: o histórico de gerações é mantido inteiramente no estado do componente React, sem endpoint de API nesta subetapa."
+          },
+          "export-gate-summary": "Com export-1, export-2, export-3 e export-4 concluídos e evidências registradas para SAST, SCA, Secret Scanning e DAST em todas as subetapas, o gate postImplementation da etapa export foi marcado como completed em 2026-08-25T23:30:00-03:00. API Security Testing permanece not_applicable para a etapa: nenhuma das quatro subetapas introduziu endpoints de API (geração do .apkg, download e retenção ocorrem inteiramente no navegador/estado do componente)."
         }
       },
       "gates": {
@@ -911,7 +925,7 @@
           ]
         },
         "postImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredGate": "export-security-verification"
         }
       }
