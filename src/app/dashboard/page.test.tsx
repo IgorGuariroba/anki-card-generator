@@ -290,4 +290,14 @@ describe('configuração de provedores', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Informe a chave OpenRouter.');
   });
+
+  it('rejeita chave OpenRouter com formato inválido', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Chave OpenRouter'), { target: { value: 'chave-qualquer' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar configuração' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('A chave OpenRouter deve iniciar com "sk-or-".');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
 });
