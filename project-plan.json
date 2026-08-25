@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-26T13:40:00-03:00",
+  "updatedAt": "2026-08-26T15:30:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -179,27 +179,27 @@
           {
             "name": "SAST",
             "description": "Análise estática do código",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "SCA",
             "description": "Análise de dependências e vulnerabilidades",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "Secret Scanning",
             "description": "Busca de segredos versionados ou expostos",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "DAST",
             "description": "Análise dinâmica da aplicação em execução",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "API Security Testing",
             "description": "Validação de endpoints, autenticação, autorização, entradas e respostas de API",
-            "status": "pending"
+            "status": "not_applicable"
           }
         ],
         "evidence": {
@@ -1429,6 +1429,58 @@
         "postImplementation": {"status": "completed", "requiredGate": "colloquial-generation-preference-security-verification"}
       },
       "completedAt": "2026-08-26T14:00:00-03:00"
+    }
+    ,{
+      "id": "generation-api-boundary",
+      "title": "Criar fronteira autenticada da API de geração",
+      "status": "completed",
+      "agent": "pi",
+      "completedAt": "2026-08-26T15:30:00-03:00",
+      "dependsOn": ["backend-contracts"],
+      "research": {
+        "code": "Reutilizar src/lib/backend-contract.ts para validação determinística e src/proxy.ts para o mesmo cookie anki_session; o endpoint novo ficará isolado em src/app/api/generate/route.ts com testes Vitest na própria fronteira HTTP.",
+        "docs": "Documentação local do Next.js 16.3.2 em node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/route.md: Route Handlers usam Request/Response e suportam POST. AGENTS.md exige App Router, APIs assíncronas e npm run verify.",
+        "guardrails": [
+          "Somente POST /api/generate será implementado nesta subetapa.",
+          "A ausência de anki_session ou cookie vazio deve retornar 401 sem validar ou processar geração.",
+          "JSON inválido e contrato inválido devem retornar 400 com mensagem determinística e sem credenciais na resposta.",
+          "Uma requisição válida deve retornar 501 explicitando que o provedor ainda não foi integrado; não simular cards nem chamar rede.",
+          "Nenhum segredo deve ser aceito no contrato público ou refletido na resposta.",
+          "Testes devem observar a fronteira pública do handler via Request/Response; npm run verify deve permanecer verde."
+        ]
+      },
+      "substeps": [
+        {"id": "generation-api-boundary-research-code", "title": "Pesquisar código afetado e oportunidades de reaproveitamento", "status": "completed"},
+        {"id": "generation-api-boundary-research-docs", "title": "Pesquisar documentação oficial da versão instalada", "status": "completed"},
+        {"id": "generation-api-boundary-define-guardrails", "title": "Definir guardrails determinísticos", "status": "completed"},
+        {"id": "generation-api-boundary-implementation", "title": "Implementar endpoint autenticado de validação", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T15:30:00-03:00"},
+        {"id": "generation-api-boundary-security-verification", "title": "Verificações de segurança contínuas da etapa", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T15:30:00-03:00"}
+      ],
+      "securityVerification": {
+        "id": "generation-api-boundary-security-verification",
+        "status": "completed",
+        "requiredChecks": [
+          {"name": "SAST", "status": "completed"},
+          {"name": "SCA", "status": "completed"},
+          {"name": "Secret Scanning", "status": "completed"},
+          {"name": "DAST", "status": "completed"},
+          {"name": "API Security Testing", "status": "completed"}
+        ],
+        "completedAt": "2026-08-26T15:30:00-03:00",
+        "agent": "pi",
+        "evidence": {
+          "SAST": "npm run verify — typecheck, 76 testes, ESLint e build aprovados.",
+          "SCA": "npm audit --audit-level=high via npm run verify — 0 vulnerabilidades.",
+          "Secret Scanning": "git grep -nE '(sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|password[[:space:]]*[:=])' -- ':!package-lock.json' — nenhum segredo real; ocorrências são campos e fixtures conhecidas.",
+          "DAST": "curl contra npm run dev (pid 1118340, encerrado após o teste): POST anônimo retornou 401; sessão válida retornou 501; contrato inválido retornou 400. Respostas verificadas no runtime HTTP.",
+          "API Security Testing": "curl validou autenticação, autorização de entrada, contrato inválido e não reflexão do campo secret: 401/400/501 e respostas sem credenciais.",
+          "limitation": "O endpoint ainda não chama provedor, não persiste geração e retorna 501 para contrato válido; integração real depende de backend/provedor seguro."
+        }
+      },
+      "gates": {
+        "preImplementation": {"status": "completed", "requiredSubsteps": ["generation-api-boundary-research-code", "generation-api-boundary-research-docs", "generation-api-boundary-define-guardrails"]},
+        "postImplementation": {"status": "completed", "requiredGate": "generation-api-boundary-security-verification"}
+      }
     }
   ]
 }
