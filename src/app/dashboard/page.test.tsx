@@ -16,6 +16,15 @@ describe('configuração de provedores', () => {
     expect(screen.getByText('••••••••')).toBeInTheDocument();
   });
 
+  it('informa que a validação remota e o limite dependem do backend', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Chave OpenRouter'), { target: { value: 'sk-or-v1-example-secret' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Validar chave OpenRouter' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Validação remota e consulta de limite disponíveis após a integração com o backend.');
+  });
+
   it('não salva a chave do provedor TTS quando apenas um dos campos é preenchido', () => {
     render(<DashboardPage />);
 

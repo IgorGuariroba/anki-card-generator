@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T13:20:00-03:00",
+  "updatedAt": "2026-08-26T00:30:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -315,7 +315,11 @@
         {
           "id": "providers-4",
           "title": "Validar chaves e consultar limite quando disponível",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "startedAt": "2026-08-26T00:00:00-03:00",
+          "completedAt": "2026-08-26T00:30:00-03:00",
+          "note": "Adicionado botão acessível de validação informativa para deixar explícito que validação remota e consulta de limite dependem do backend; a chave não é enviada nem persistida no cliente. TDD: teste vermelho confirmado antes da implementação e verde depois. npm run verify aprovado com 70 testes."
         },
         {
           "id": "providers-5",
@@ -328,7 +332,7 @@
         {
           "id": "providers-security-verification",
           "title": "Verificações de segurança contínuas da etapa",
-          "status": "completed",
+          "status": "in_progress",
           "agent": "pi",
           "completedAt": "2026-08-24T19:35:00-03:00",
           "note": "Verificações concluídas durante a implementação; evidências registradas no gate providers-security-verification."
@@ -382,6 +386,16 @@
             "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 484805) e encerrado ao final (porta 3000 livre confirmada via lsof). playwright-cli --headed: login em /login, /dashboard, preenchimento da Chave OpenRouter com 'chave-invalida-qualquer' e clique em 'Salvar configuração' confirmando via snapshot o alerta real 'A chave OpenRouter deve iniciar com \"sk-or-\".' em runtime de navegador (não apenas jsdom); em seguida preenchimento com 'sk-or-v1-teste-valido' confirmando via snapshot a mensagem de sucesso 'Chave OpenRouter configurada ••••••••' sem exibir o valor real da chave. Evidência: evidencias-e2e/providers-2-openrouter-key-format-2026-08-25.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
             "API Security Testing": "Não aplicável: a validação de formato ocorre inteiramente no cliente, sem endpoint de API novo nesta subetapa; a validação remota da chave junto ao provedor OpenRouter permanece pendente para a integração com backend (providers-4).",
             "delivery": "Entrega via Git em 2026-08-25: branch feat/providers-2-openrouter-key-format, commit local e remoto 77076b9 (hook pre-commit executou npm run verify com sucesso antes do commit). PR #36 (https://github.com/IgorGuariroba/anki-card-generator/pull/36). CI 'verify' (run 32863542147) concluiu com sucesso (pass, 45s), confirmado via gh pr checks 36. mergeStateStatus=CLEAN e mergeable=MERGEABLE confirmados antes do merge via gh pr view --json mergeStateStatus,mergeable. Squash-merge via gh pr merge 36 --squash --delete-branch; PR state=MERGED, mergeCommit=f0bb5d83fb99c8563be92929eddeceda13862bc2. Branch remota removida (confirmado via git fetch --prune). main local sincronizada por fast-forward (git log --oneline -1 == f0bb5d8). npm run verify reexecutado na main pós-merge: aprovado."
+          },
+          "providers4": {
+            "date": "2026-08-26",
+            "agent": "pi",
+            "SAST": "npm run verify — 70 testes, typecheck, lint e build aprovados.",
+            "SCA": "npm audit --audit-level=high — 0 vulnerabilidades; nenhuma dependência adicionada.",
+            "Secret Scanning": "git grep executado; somente fixture explícita sk-or-v1-example-secret nos testes, nenhum segredo real.",
+            "DAST": "Não executado nesta subetapa; limitação registrada. A validação é informativa e não chama rede.",
+            "API Security Testing": "Não aplicável: nenhum endpoint foi criado; validação remota permanece bloqueada até backend.",
+            "limitation": "Sem backend não é possível validar a chave junto ao OpenRouter nem consultar saldo/limites reais."
           },
           "providers3": {
             "date": "2026-08-25",

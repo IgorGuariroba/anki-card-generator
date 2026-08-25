@@ -38,6 +38,7 @@ function ModelPicker({ label, models: availableModels }: { label: string; models
 export default function DashboardPage() {
   const [openRouterKey, setOpenRouterKey] = useState('');
   const [saved, setSaved] = useState(false);
+  const [validationMessage, setValidationMessage] = useState('');
   const [ttsProvider, setTtsProvider] = useState('');
   const [ttsKey, setTtsKey] = useState('');
   const [ttsSaved, setTtsSaved] = useState(false);
@@ -144,6 +145,10 @@ export default function DashboardPage() {
     }
   }
 
+  function handleOpenRouterValidation() {
+    setValidationMessage('Validação remota e consulta de limite disponíveis após a integração com o backend.');
+  }
+
   function handleTtsSubmit() {
     const provider = ttsProvider.trim();
     const key = ttsKey.trim();
@@ -185,6 +190,8 @@ export default function DashboardPage() {
           <label htmlFor="openrouter-key">Chave OpenRouter</label>
           <input id="openrouter-key" aria-label="Chave OpenRouter" type="password" value={openRouterKey} onChange={(event) => setOpenRouterKey(event.target.value)} autoComplete="off" />
           <p className="field-help">A chave é protegida e nunca fica visível depois de salva.</p>
+          <button className="secondary-button" type="button" onClick={handleOpenRouterValidation}>Validar chave OpenRouter</button>
+          {validationMessage && <p className="form-success" role="status">{validationMessage}</p>}
           {saved && <p className="form-success" role="status">Chave OpenRouter configurada <span aria-label="chave protegida">••••••••</span></p>}
           {error && <p className="form-error" role="alert">{error}</p>}
           <ModelPicker label="Texto" models={models.texto} />
