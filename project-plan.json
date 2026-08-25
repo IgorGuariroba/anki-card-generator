@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T00:45:00-03:00",
+  "updatedAt": "2026-08-25T02:20:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -665,17 +665,23 @@
           "status": "completed",
           "agent": "pi",
           "completedAt": "2026-08-25T00:45:00-03:00",
-          "note": "Cards reorganizados em grade responsiva com hierarquia visual, placeholder textual sem emoji e bloco de áudio estilizado; validação visual executada em navegador visível."
+          "note": "Grade ajustada para uma coluna, com largura máxima de 720px e espaçamento suficiente para leitura dos cartões; inputs sem overflow, hierarquia de labels e placeholder textual preservados. Botão secundário mantém os tokens, contraste, foco e estados hover. Validação Playwright headed executada com geração get/iniciante; grade confirmada visualmente. Evidências: evidencias-e2e/review-cards-one-column-2026-08-25.png e evidencias-e2e/review-cards-one-column-2026-08-25.webm."
         },
         {
           "id": "review-2",
           "title": "Editar frase e tradução",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T01:05:00-03:00",
+          "note": "Campos editáveis de frase e tradução adicionados com labels acessíveis; alterações refletem no card sem alterar a quantidade de cards. Cobertura TDD, npm run verify e validação Playwright headed aprovados. Evidências: evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e evidencias-e2e/review-2-edit-2026-08-25-rerun.png."
         },
         {
           "id": "review-3",
           "title": "Regenerar ou substituir imagem e áudio",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T01:50:00-03:00",
+          "note": "Adicionados botões de regeneração individual de imagem e áudio por card, com status atualizado para 'regenerada'/'regenerado' e sem afetar os demais 9 cards. Cobertura TDD (2 novos testes), npm run verify e validação Playwright headed aprovados. Correção em 2026-08-25T02:15:00-03:00: o áudio estava posicionado como pronúncia da tradução em português; reposicionado para logo após a frase em inglês e renomeado para 'Pronúncia do texto em inglês' / 'Áudio da frase em inglês N', deixando explícito que o áudio reproduz o inglês com voz humana configurável, não a tradução. Cobertura TDD adicional (2 testes: label correta e ausência de áudio associado à tradução), npm run verify (26 testes) e validação Playwright headed aprovados."
         },
         {
           "id": "review-4",
@@ -706,7 +712,7 @@
           {
             "name": "Secret Scanning",
             "description": "Busca de segredos versionados ou expostos",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "DAST",
@@ -722,12 +728,12 @@
         "evidence": {
           "date": "2026-08-25",
           "agent": "pi",
-          "SAST": "npm run verify — typecheck, lint, testes (22) e build aprovados.",
-          "SCA": "npm audit --audit-level=high — 0 vulnerabilidades.",
-          "Secret Scanning": "Ainda não executado nesta subetapa; pendente antes da conclusão da etapa.",
-          "DAST": "playwright-cli --headed: login, geração de cards e screenshot/video do layout; evidências evidencias-e2e/review-layout-visible.png e evidencias-e2e/review-layout-visible.webm. Console do Next Dev Tools registrou erro de desenvolvimento, sem impacto visual observado.",
+          "SAST": "npm run verify — typecheck, lint, testes (25) e build aprovados (executado após review-3).",
+          "SCA": "npm audit --audit-level=high — 0 vulnerabilidades (executado após review-3).",
+          "Secret Scanning": "git grep -nE por padrões de chaves/privadas executado após review-3; nenhum segredo real. Ocorrências são nomes de campos password e fixture explícita sk-or-v1-example-secret usada para testar não exposição.",
+          "DAST": "playwright-cli headed executado em 2026-08-25 para review-3: login, dashboard, geração make/iniciante, clique em 'Regenerar imagem do card 1' e 'Regenerar áudio do card 1' (exact:true para evitar ambiguidade com card 10), confirmação via find e screenshot. Evidências: evidencias-e2e/review-3-regenerate-2026-08-25.webm e evidencias-e2e/review-3-regenerate-2026-08-25.png. Nova rodada em 2026-08-25T02:15:00-03:00 após correção do áudio (agora associado ao inglês, não à tradução): login, dashboard, geração make/iniciante, confirmação via find de que o bloco de áudio 'Pronúncia do texto em inglês'/'Áudio da frase em inglês N' aparece logo após o campo de frase em inglês e antes da tradução. Evidências: evidencias-e2e/review-3-audio-fix-2026-08-25.webm e evidencias-e2e/review-3-audio-fix-2026-08-25.png. Console do Next Dev Tools registrou erro de desenvolvimento já conhecido, sem impedir o fluxo. Anterior (review-2): evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e .png.",
           "API Security Testing": "Não aplicável nesta subetapa: não houve alteração de endpoints/API.",
-          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração de mídia fica para backend."
+          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras. review-4 e review-5 ainda pendentes, então o gate postImplementation da etapa review permanece pending até a etapa ser concluida por completo."
         }
       },
       "gates": {

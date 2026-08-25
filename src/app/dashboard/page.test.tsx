@@ -75,6 +75,51 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByText(/Imagem (gerada|reutilizada)/)).toHaveLength(10);
   });
 
+  it('permite editar a frase e a tradução de um card', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    const sentence = screen.getByLabelText('Frase em inglês do card 1');
+    const translation = screen.getByLabelText('Tradução em português do card 1');
+    fireEvent.change(sentence, { target: { value: 'I make breakfast every day.' } });
+    fireEvent.change(translation, { target: { value: 'Eu preparo o café da manhã todos os dias.' } });
+    fireEvent.blur(sentence);
+    fireEvent.blur(translation);
+
+    expect(sentence).toHaveValue('I make breakfast every day.');
+    expect(translation).toHaveValue('Eu preparo o café da manhã todos os dias.');
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+  });
+
+  it('permite regenerar a imagem de um card individual', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerar imagem do card 1' }));
+
+    expect(screen.getByText(/Imagem regenerada/)).toBeInTheDocument();
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+  });
+
+  it('permite substituir o áudio de um card individual', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerar áudio do card 1' }));
+
+    expect(screen.getByText(/Áudio regenerado/)).toBeInTheDocument();
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+  });
+
   it('configura voz, sotaque e velocidade do áudio', () => {
     render(<DashboardPage />);
 
@@ -94,8 +139,20 @@ describe('configuração de provedores', () => {
     fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
     fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
 
-    expect(screen.getAllByLabelText(/Áudio da frase/)).toHaveLength(10);
+    expect(screen.getAllByLabelText(/Áudio da frase em inglês/)).toHaveLength(10);
     expect(screen.getAllByText('Áudio gerado')).toHaveLength(10);
+    expect(screen.getAllByText(/Pronúncia do texto em inglês/)).toHaveLength(10);
+  });
+
+  it('não associa o áudio à tradução em português', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.queryAllByLabelText(/Áudio da tradução/)).toHaveLength(0);
+    expect(screen.queryByText(/Áudio.*tradução/)).not.toBeInTheDocument();
   });
 
   it('evita gerar novamente uma combinação já presente no histórico', () => {
