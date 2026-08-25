@@ -1387,6 +1387,48 @@
         }
       },
       "completedAt": "2026-08-26T13:40:00-03:00"
+    },
+    {
+      "id": "colloquial-generation-preference",
+      "title": "Preferência por inglês coloquial e natural",
+      "status": "completed",
+      "agent": "pi",
+      "dependsOn": ["generation"],
+      "research": {
+        "code": "Reutilizado src/lib/card-generation.ts, ponto único da geração simulada usado pelo dashboard e pela regeneração; SPEC.md foi atualizado como contrato funcional.",
+        "docs": "SPEC.md e instruções de AGENTS.md; não foi necessária nova API do Next.js, pois a alteração é um módulo TypeScript puro.",
+        "guardrails": [
+          "Cada verbo deve ter exemplos cotidianos, coloquiais e idiomáticos quando apropriado.",
+          "Quando não houver tradução direta natural, a tradução deve registrar o significado/uso em pt-BR e não uma equivalência literal forçada.",
+          "As frases devem preservar o verbo solicitado e possuir tradução pt-BR correspondente.",
+          "A geração deve continuar determinística, retornar exatamente count cards e preservar os metadados existentes.",
+          "npm run verify deve permanecer verde; nenhuma chave ou chamada externa pode ser introduzida."
+        ]
+      },
+      "substeps": [
+        {"id": "colloquial-generation-preference-research-code", "title": "Pesquisar código afetado e oportunidades de reaproveitamento", "status": "completed"},
+        {"id": "colloquial-generation-preference-research-docs", "title": "Pesquisar documentação e contrato funcional", "status": "completed"},
+        {"id": "colloquial-generation-preference-define-guardrails", "title": "Definir guardrails determinísticos", "status": "completed"},
+        {"id": "colloquial-generation-preference-implementation", "title": "Aplicar exemplos coloquiais por verbo", "status": "completed", "agent": "pi", "completedAt": "2026-08-26T14:00:00-03:00"}
+      ],
+      "securityVerification": {
+        "id": "colloquial-generation-preference-security-verification",
+        "status": "completed",
+        "requiredChecks": [
+          {"name": "SAST", "status": "completed"},
+          {"name": "SCA", "status": "completed"},
+          {"name": "Secret Scanning", "status": "completed"},
+          {"name": "DAST", "status": "not_applicable"},
+          {"name": "API Security Testing", "status": "not_applicable"}
+        ],
+        "evidence": "SAST: npm run verify executado e aprovado (73 testes, typecheck, lint e build). SCA: npm audit --audit-level=high executado e aprovado (0 vulnerabilidades). Secret Scanning: git grep executado; somente ocorrências conhecidas de campos password, fixture de teste e histórico do plano, sem segredo real. DAST e API Security Testing não aplicáveis: alteração determinística local, sem endpoint ou chamada de rede.",
+        "agent": "pi"
+      },
+      "gates": {
+        "preImplementation": {"status": "completed", "requiredSubsteps": ["colloquial-generation-preference-research-code", "colloquial-generation-preference-research-docs", "colloquial-generation-preference-define-guardrails"]},
+        "postImplementation": {"status": "completed", "requiredGate": "colloquial-generation-preference-security-verification"}
+      },
+      "completedAt": "2026-08-26T14:00:00-03:00"
     }
   ]
 }
