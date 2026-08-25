@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-26T13:33:00-03:00",
+  "updatedAt": "2026-08-26T13:40:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -1290,6 +1290,103 @@
           "requiredGate": "delivery-security-verification"
         }
       }
+    },
+    {
+      "id": "backend-contracts",
+      "title": "Contratos seguros para integração de backend",
+      "status": "completed",
+      "agent": "pi",
+      "dependsOn": [
+        "quality"
+      ],
+      "research": {
+        "code": "Reutilizar ReviewedCard e os campos de src/app/dashboard/page.tsx, a validação de formato já existente em providers e o padrão de módulos puros testados em src/lib/card-generation.ts e src/lib/generation-retention.ts.",
+        "docs": "Next.js 16.3.2: documentação versionada em node_modules/next/dist/docs/ sobre App Router, Server Components e Route Handlers. SPEC.md: chaves nunca expostas ao navegador e persistência segura no backend.",
+        "guardrails": [
+          "O contrato público não aceita nem retorna chaves secretas em objetos de geração.",
+          "A requisição deve exigir verbo, nível e exatamente 10 cards quando usada para geração.",
+          "A validação deve ser pura, determinística e coberta por Vitest sem rede ou DOM.",
+          "Nenhuma chamada de provedor ou endpoint será criado nesta subetapa; integração real permanece posterior."
+        ]
+      },
+      "substeps": [
+        {
+          "id": "backend-contracts-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "completed"
+        },
+        {
+          "id": "backend-contracts-research-docs",
+          "title": "Pesquisar documentação oficial da versão instalada",
+          "status": "completed"
+        },
+        {
+          "id": "backend-contracts-define-guardrails",
+          "title": "Definir guardrails determinísticos da implementação",
+          "status": "completed"
+        },
+        {
+          "id": "backend-contracts-1",
+          "title": "Definir contrato seguro de geração",
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-26T13:40:00-03:00",
+          "note": "Criado src/lib/backend-contract.ts com contrato puro para futura geração no backend, validando verbo, nível e exatamente 10 cards sem transportar credenciais. TDD em src/lib/backend-contract.test.ts (3 testes); npm run verify aprovado com 73 testes."
+        }
+      ],
+      "securityVerification": {
+        "id": "backend-contracts-security-verification",
+        "title": "Verificação obrigatória de segurança pós-etapa",
+        "status": "completed",
+        "requiredChecks": [
+          {
+            "name": "SAST",
+            "status": "completed"
+          },
+          {
+            "name": "SCA",
+            "status": "completed"
+          },
+          {
+            "name": "Secret Scanning",
+            "status": "completed"
+          },
+          {
+            "name": "DAST",
+            "status": "not_applicable"
+          },
+          {
+            "name": "API Security Testing",
+            "status": "not_applicable"
+          }
+        ],
+        "completedAt": "2026-08-26T13:40:00-03:00",
+        "agent": "pi",
+        "evidence": {
+          "date": "2026-08-26",
+          "SAST": "npm run verify — typecheck, 73 testes, ESLint e build aprovados.",
+          "SCA": "npm run verify executou npm audit --audit-level=high — 0 vulnerabilidades.",
+          "Secret Scanning": "git grep -nE por padrões de chaves/privadas, excluindo package-lock.json e project-plan.json — nenhum segredo real; ocorrências são campos password e fixture explícita de teste.",
+          "DAST": "Não aplicável: não houve endpoint, tela ou alteração de runtime; contrato é módulo puro sem rede/DOM.",
+          "API Security Testing": "Não aplicável: nenhum endpoint de API foi criado nesta subetapa.",
+          "limitation": "A integração real com backend, autenticação persistente e chamadas a provedores continuam pendentes."
+        }
+      },
+      "gates": {
+        "preImplementation": {
+          "status": "completed",
+          "requiredSubsteps": [
+            "backend-contracts-research-code",
+            "backend-contracts-research-docs",
+            "backend-contracts-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "completed",
+          "requiredGate": "backend-contracts-security-verification"
+        }
+      },
+      "completedAt": "2026-08-26T13:40:00-03:00"
     }
   ]
 }
