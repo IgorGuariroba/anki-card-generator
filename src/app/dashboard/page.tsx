@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [voice, setVoice] = useState('nova');
   const [accent, setAccent] = useState('americano');
   const [speed, setSpeed] = useState('1');
-  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; imageStatus: 'gerada' | 'reutilizada'; audioStatus: 'gerado' }>>([]);
+  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado' }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -66,6 +66,14 @@ export default function DashboardPage() {
       audioStatus: 'gerado',
     })));
     setGenerationHistory((history) => new Set(history).add(historyKey));
+  }
+
+  function handleRegenerateImage(index: number) {
+    setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, imageStatus: 'regenerada' } : item));
+  }
+
+  function handleRegenerateAudio(index: number) {
+    setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, audioStatus: 'regenerado' } : item));
   }
 
   function handleRetryMissing() {
@@ -164,6 +172,14 @@ export default function DashboardPage() {
                   <p className="eyebrow">Frase {index + 1} de 10</p>
                   <label htmlFor={`sentence-${index}`}>Frase em inglês</label>
                   <input id={`sentence-${index}`} aria-label={`Frase em inglês do card ${index + 1}`} value={card.sentence} onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, sentence: event.target.value } : item))} />
+                  <div className="audio-control">
+                    <span className="audio-label">Pronúncia do texto em inglês</span>
+                    <audio controls aria-label={`Áudio da frase em inglês ${index + 1}`} preload="none">
+                      <track kind="captions" />
+                    </audio>
+                  </div>
+                  <p className="field-help"><span>{card.audioStatus === 'gerado' ? 'Áudio gerado' : card.audioStatus === 'regenerado' ? 'Áudio regenerado' : 'Áudio pendente'}</span> · voz {voice}, sotaque {accent}, velocidade {speed}×</p>
+                  <button className="secondary-button" type="button" onClick={() => handleRegenerateAudio(index)}>Regenerar áudio do card {index + 1}</button>
                   <label htmlFor={`translation-${index}`}>Tradução em português</label>
                   <input id={`translation-${index}`} aria-label={`Tradução em português do card ${index + 1}`} value={card.translation} onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, translation: event.target.value } : item))} />
                   <div className="card-image" role="img" aria-label={`Imagem ${card.sentence}`}>
@@ -171,14 +187,7 @@ export default function DashboardPage() {
                     <small>aguardando mídia</small>
                   </div>
                   <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
-                  <p className="field-help">Tradução pendente</p>
-                  <div className="audio-control">
-                    <span className="audio-label">Áudio</span>
-                    <audio controls aria-label={`Áudio da frase ${index + 1}`} preload="none">
-                      <track kind="captions" />
-                    </audio>
-                  </div>
-                  <p className="field-help"><span>{card.audioStatus === 'gerado' ? 'Áudio gerado' : 'Áudio pendente'}</span> · voz {voice}, sotaque {accent}, velocidade {speed}×</p>
+                  <button className="secondary-button" type="button" onClick={() => handleRegenerateImage(index)}>Regenerar imagem do card {index + 1}</button>
                 </article>
               ))}
               </section>
