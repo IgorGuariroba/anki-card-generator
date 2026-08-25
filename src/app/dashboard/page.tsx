@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const [verb, setVerb] = useState('');
   const [level, setLevel] = useState('');
   const [generationMessage, setGenerationMessage] = useState('');
-  const [generatedCards, setGeneratedCards] = useState<string[]>([]);
+  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; imageStatus: 'gerada' | 'reutilizada' }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -56,7 +56,10 @@ export default function DashboardPage() {
     setError('');
     const difficulty = levels[level as keyof typeof levels].toLowerCase();
     setGenerationMessage(`Geração iniciada para ${verb} no nível ${difficulty}.`);
-    setGeneratedCards(Array.from({ length: 10 }, (_, index) => `Exemplo ${index + 1}: I ${verb} something.`));
+    setGeneratedCards(Array.from({ length: 10 }, (_, index) => ({
+      sentence: `Exemplo ${index + 1}: I ${verb} something.`,
+      imageStatus: index === 0 ? 'gerada' : 'reutilizada',
+    })));
     setGenerationHistory((history) => new Set(history).add(historyKey));
   }
 
@@ -111,10 +114,14 @@ export default function DashboardPage() {
           {generationMessage && <p className="form-success" role="status">{generationMessage}</p>}
           {generatedCards.length > 0 && (
             <section aria-label="Cards gerados" className="generated-cards">
-              {generatedCards.map((sentence, index) => (
-                <article key={`${sentence}-${index}`} className="generated-card">
+              {generatedCards.map((card, index) => (
+                <article key={`${card.sentence}-${index}`} className="generated-card">
                   <p className="eyebrow">Frase {index + 1} de 10</p>
-                  <p>{sentence}</p>
+                  <p>{card.sentence}</p>
+                  <div className="card-image" role="img" aria-label={`Imagem ${card.sentence}`}>
+                    <span aria-hidden="true">🖼️</span>
+                  </div>
+                  <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
                   <p className="field-help">Tradução pendente</p>
                 </article>
               ))}

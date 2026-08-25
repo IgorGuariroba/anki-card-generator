@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-24T21:06:00-03:00",
+  "updatedAt": "2026-08-24T21:12:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -443,7 +443,10 @@
         {
           "id": "generation-5",
           "title": "Gerar ou reutilizar imagens",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T21:12:00-03:00",
+          "note": "Cards exibem representação visual acessível; a primeira imagem é marcada como gerada e as demais como reutilizadas nesta simulação local, sem chamada a provedor até o backend."
         },
         {
           "id": "generation-6",
@@ -487,7 +490,41 @@
             "status": "pending"
           }
         ],
-        "evidence": "SAST: npx eslint .pi/extensions/project-report.ts e npm run verify aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves, nenhum segredo real. DAST e API Security Testing: não aplicáveis, pois a extensão é local e não expõe aplicação ou endpoints.",
+        "evidence": {
+          "date": "2026-08-24",
+          "agent": "pi",
+          "SAST": {
+            "status": "completed",
+            "commands": [
+              "npm run lint",
+              "npm run typecheck",
+              "npm run build"
+            ],
+            "result": "Aprovados"
+          },
+          "SCA": {
+            "status": "completed",
+            "commands": [
+              "npm audit --audit-level=high"
+            ],
+            "result": "0 vulnerabilidades"
+          },
+          "Secret Scanning": {
+            "status": "completed",
+            "commands": [
+              "git grep -nE '(sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|password[[:space:]]*[:=])' -- ':!package-lock.json'"
+            ],
+            "result": "Nenhum segredo real; ocorrências encontradas são nomes de campos e fixture de teste explicitamente não-real"
+          },
+          "DAST": {
+            "status": "not_applicable",
+            "result": "Não executado: esta subetapa não expõe servidor/API nem realiza chamada externa; a interação foi coberta pela suíte Vitest."
+          },
+          "API Security Testing": {
+            "status": "not_applicable",
+            "result": "Não há endpoints de API nesta subetapa."
+          }
+        },
         "agent": "pi",
         "completedAt": "2026-08-24T21:06:00-03:00"
       },
@@ -523,7 +560,9 @@
       "status": "completed",
       "completedAt": "2026-08-24T21:06:00-03:00",
       "agent": "pi",
-      "dependsOn": ["foundation"],
+      "dependsOn": [
+        "foundation"
+      ],
       "research": {
         "code": "Não havia extensão local .pi; a integração será independente do Next.js e lerá project-plan.json, git diff e comandos da sessão.",
         "docs": "Documentação local do pi: docs/extensions.md; eventos agent_settled, before_agent_start e tool_call; extensões locais em .pi/extensions/.",
@@ -536,29 +575,73 @@
         ]
       },
       "substeps": [
-        {"id": "pi-reporting-research-code", "title": "Pesquisar código afetado e oportunidades de reaproveitamento", "status": "completed"},
-        {"id": "pi-reporting-research-docs", "title": "Pesquisar documentação oficial do pi", "status": "completed"},
-        {"id": "pi-reporting-define-guardrails", "title": "Definir guardrails determinísticos", "status": "completed"},
-        {"id": "pi-reporting-1", "title": "Implementar extensão de cobrança e comando /report", "status": "completed", "agent": "pi", "completedAt": "2026-08-24T21:06:00-03:00", "note": "Extensão local .pi/extensions/project-report.ts adicionada com lembrete before_agent_start, validação agent_settled e comando /report."}
+        {
+          "id": "pi-reporting-research-code",
+          "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
+          "status": "completed"
+        },
+        {
+          "id": "pi-reporting-research-docs",
+          "title": "Pesquisar documentação oficial do pi",
+          "status": "completed"
+        },
+        {
+          "id": "pi-reporting-define-guardrails",
+          "title": "Definir guardrails determinísticos",
+          "status": "completed"
+        },
+        {
+          "id": "pi-reporting-1",
+          "title": "Implementar extensão de cobrança e comando /report",
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T21:06:00-03:00",
+          "note": "Extensão local .pi/extensions/project-report.ts adicionada com lembrete before_agent_start, validação agent_settled e comando /report."
+        }
       ],
       "securityVerification": {
         "id": "pi-reporting-security-verification",
         "title": "Verificação de segurança da extensão",
         "status": "completed",
         "requiredChecks": [
-          {"name": "SAST", "status": "completed"},
-          {"name": "SCA", "status": "not_applicable"},
-          {"name": "Secret Scanning", "status": "completed"},
-          {"name": "DAST", "status": "not_applicable"},
-          {"name": "API Security Testing", "status": "not_applicable"}
+          {
+            "name": "SAST",
+            "status": "completed"
+          },
+          {
+            "name": "SCA",
+            "status": "not_applicable"
+          },
+          {
+            "name": "Secret Scanning",
+            "status": "completed"
+          },
+          {
+            "name": "DAST",
+            "status": "not_applicable"
+          },
+          {
+            "name": "API Security Testing",
+            "status": "not_applicable"
+          }
         ],
         "evidence": "SAST: npx eslint .pi/extensions/project-report.ts e npm run verify aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves, nenhum segredo real. DAST e API Security Testing: não aplicáveis, pois a extensão é local e não expõe aplicação ou endpoints.",
         "agent": "pi",
         "completedAt": "2026-08-24T21:06:00-03:00"
       },
       "gates": {
-        "preImplementation": {"status": "completed", "requiredSubsteps": ["pi-reporting-research-code", "pi-reporting-research-docs", "pi-reporting-define-guardrails"]},
-        "postImplementation": {"status": "completed", "requiredGate": "pi-reporting-security-verification"}
+        "preImplementation": {
+          "status": "completed",
+          "requiredSubsteps": [
+            "pi-reporting-research-code",
+            "pi-reporting-research-docs",
+            "pi-reporting-define-guardrails"
+          ]
+        },
+        "postImplementation": {
+          "status": "completed",
+          "requiredGate": "pi-reporting-security-verification"
+        }
       }
     },
     {
