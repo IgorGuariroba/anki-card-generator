@@ -5,6 +5,7 @@ import initSqlJs from 'sql.js';
 import { buildAnkiPackage } from '@/lib/anki-package';
 import { triggerApkgDownload } from '@/lib/apkg-download';
 import { pruneExpiredGenerations, removeGeneration, RETENTION_DAYS, type StoredGeneration } from '@/lib/generation-retention';
+import { generateCards } from '@/lib/card-generation';
 
 const verbs = ['make', 'do', 'take', 'get', 'have', 'give', 'put', 'set', 'go'] as const;
 const levels = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' } as const;
@@ -69,19 +70,18 @@ export default function DashboardPage() {
       setError('Essa combinação já foi gerada nesta sessão.');
       return;
     }
+    let cards;
+    try {
+      cards = generateCards(verb, 10, 0);
+    } catch (generationFailure) {
+      setGenerationMessage('');
+      setError(generationFailure instanceof Error ? generationFailure.message : 'Falha ao gerar os cards.');
+      return;
+    }
     setError('');
     const difficulty = levels[level as keyof typeof levels].toLowerCase();
     setGenerationMessage(`Geração iniciada para ${verb} no nível ${difficulty}.`);
-    setGeneratedCards(Array.from({ length: 10 }, (_, index) => ({
-      sentence: `Exemplo ${index + 1}: I ${verb} something.`,
-      translation: `Exemplo ${index + 1}: Eu ${verb} alguma coisa.`,
-      tags: '',
-      notes: '',
-      pronunciation: '',
-      imageStatus: index === 0 ? 'gerada' : 'reutilizada',
-      audioStatus: 'gerado',
-      approved: false,
-    })));
+    setGeneratedCards(cards);
     setGenerationHistory((history) => new Set(history).add(historyKey));
     setStoredGenerations((generations) => [
       ...generations,
@@ -113,18 +113,15 @@ export default function DashboardPage() {
     }
 
     const missing = 10 - generatedCards.length;
-    setGeneratedCards((cards) => [...cards, ...Array.from({ length: missing }, (_, index) => ({
-      sentence: `Card regenerado ${cards.length + index + 1}: I ${verb} something.`,
-      translation: `Card regenerado ${cards.length + index + 1}: Eu ${verb} alguma coisa.`,
-      tags: '',
-      notes: '',
-      pronunciation: '',
-      imageStatus: 'gerada' as const,
-      audioStatus: 'gerado' as const,
-      approved: false,
-    }))]);
-    setGenerationMessage(`${missing} card(s) faltante(s) regenerado(s).`);
-    setError('');
+    try {
+      const additionalCards = generateCards(verb, missing, generatedCards.length);
+      setGeneratedCards((cards) => [...cards, ...additionalCards]);
+      setGenerationMessage(`${missing} card(s) faltante(s) regenerado(s).`);
+      setError('');
+    } catch (generationFailure) {
+      setGenerationMessage('');
+      setError(generationFailure instanceof Error ? generationFailure.message : 'Falha ao gerar os cards faltantes.');
+    }
   }
 
   async function handleExport() {

@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T10:17:30-03:00",
+  "updatedAt": "2026-08-25T10:27:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -985,7 +985,10 @@
         {
           "id": "quality-3",
           "title": "Testes de duplicidade e falhas de provedores",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T10:27:00-03:00",
+          "note": "Criado src/lib/card-generation.ts (função pura generateCards) para isolar o ponto único de chamada ao provedor de geração, reutilizado tanto na geração inicial (10 cards) quanto em 'Gerar novamente apenas os faltantes'. Dashboard (src/app/dashboard/page.tsx) passou a capturar exceções de generateCards em try/catch e exibir alerta acessível determinístico, sem adicionar cards nem marcar a combinação no histórico quando falha, e SEM tentar automaticamente outro modelo/provedor (conforme SPEC.md linha 71: 'Falhas de modelo não terão fallback automático'). Criado src/app/dashboard/provider-failure-and-duplicate.test.tsx (4 testes, com mock de @/lib/card-generation seguindo o mesmo padrão de generation-review-export-flow.test.tsx): alerta determinístico e nenhum card exibido quando o provedor falha; generateCards chamado exatamente 1 vez por tentativa, comprovando ausência de fallback automático; nova tentativa da mesma combinação é permitida após falha (falha não bloqueia por duplicidade); duplicidade continua bloqueada mesmo após excluir um card e regenerar apenas os faltantes. Vermelho confirmado antes da implementação (mock de módulo inexistente causava timeout aguardando 'Iniciar geração' com efeito colateral do generateCards local antigo, sem lançar o erro simulado), verde depois. npm run verify (64 testes, lint, typecheck, build) aprovado."
         },
         {
           "id": "quality-4",
@@ -1088,7 +1091,14 @@
             "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 110423) e encerrado ao final. playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', edição real da frase/tradução/tags/observações/pronúncia do card 1, aprovação do card 1, clique real em 'Confirmar geração final'. Download real interceptado pelo playwright-cli (english-light-verbs-make-2026-08-25.apkg), validado com 'unzip -l' confirmando collection.anki21b/media/meta dentro do zip real gerado pelo fluxo completo do navegador (sql.js/ankipack reais, sem mock). Mensagem de sucesso 'Pacote ... gerado com os cards aprovados.' confirmada via role=status. Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-2-fluxo-completo-2026-08-25.webm, evidencias-e2e/quality-2-sucesso-2026-08-25.png e evidencias-e2e/quality-2-fluxo-completo-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
             "API Security Testing": "Não aplicável: geração, revisão e exportação ocorrem inteiramente no navegador/estado do componente, sem endpoint de API novo nesta subetapa."
           },
-          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-3 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
+          "quality3": {
+            "SAST": "npm run verify (gate script, audit, typecheck, 64 testes, lint, build) aprovado em 2026-08-25T10:27-03:00, após criar src/lib/card-generation.ts e src/app/dashboard/provider-failure-and-duplicate.test.tsx.",
+            "SCA": "npm audit --audit-level=high: 0 vulnerabilidades; nenhuma dependência nova adicionada.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 172735) após encerrar processos órfãos anteriores (pids 172165 e 110448) nas portas 3000/3001, conforme AGENTS.md; encerrado ao final (pids 172735 e 172760, next-server). playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, clique duplo em 'Iniciar geração' confirmando via find o alerta real 'Essa combinação já foi gerada nesta sessão.' em runtime de navegador (não apenas em jsdom). Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-3-duplicidade-2026-08-25.webm e evidencias-e2e/quality-3-duplicidade-2026-08-25.png (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: geração de cards e tratação de falha de provedor ocorrem inteiramente no navegador/estado do componente, sem endpoint de API novo nesta subetapa; a simulação local de card-generation.ts será substituída por chamada real ao provedor quando a integração de backend existir, mantendo o mesmo ponto único sem fallback automático."
+          },
+          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-4 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
         }
       },
       "gates": {
