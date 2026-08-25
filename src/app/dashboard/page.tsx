@@ -1,6 +1,8 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import initSqlJs from 'sql.js';
+import { buildAnkiPackage } from '@/lib/anki-package';
 
 const verbs = ['make', 'do', 'take', 'get', 'have', 'give', 'put', 'set', 'go'] as const;
 const levels = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' } as const;
@@ -42,6 +44,9 @@ export default function DashboardPage() {
   const [speed, setSpeed] = useState('1');
   const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; tags: string; notes: string; pronunciation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado'; approved: boolean }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
+  const [exportError, setExportError] = useState('');
+  const [exportMessage, setExportMessage] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -108,6 +113,31 @@ export default function DashboardPage() {
     }))]);
     setGenerationMessage(`${missing} card(s) faltante(s) regenerado(s).`);
     setError('');
+  }
+
+  async function handleExport() {
+    setExportError('');
+    setExportMessage('');
+    setExporting(true);
+    try {
+      const SQL = await initSqlJs({ locateFile: (file) => `/${file}` });
+      const bytes = await buildAnkiPackage(generatedCards, SQL);
+      const blob = new Blob([new Uint8Array(bytes)], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const fileName = `english-light-verbs-${verb || 'deck'}-${new Date().toISOString().slice(0, 10)}.apkg`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setExportMessage(`Pacote ${fileName} gerado com os cards aprovados.`);
+    } catch (exportFailure) {
+      setExportError(exportFailure instanceof Error ? exportFailure.message : 'Falha ao gerar o pacote .apkg.');
+    } finally {
+      setExporting(false);
+    }
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -183,7 +213,9 @@ export default function DashboardPage() {
             <>
               <button className="secondary-button" type="button" onClick={handleRetryMissing}>Gerar novamente apenas os faltantes</button>
               <p className="field-help">{generatedCards.filter((card) => card.approved).length} de {generatedCards.length} cards aprovados</p>
-              <button className="primary-button" type="button" disabled={!generatedCards.some((card) => card.approved)}>Confirmar geração final</button>
+              <button className="primary-button" type="button" disabled={!generatedCards.some((card) => card.approved) || exporting} onClick={handleExport}>{exporting ? 'Gerando pacote…' : 'Confirmar geração final'}</button>
+              {exportMessage && <p className="form-success" role="status">{exportMessage}</p>}
+              {exportError && <p className="form-error" role="alert">{exportError}</p>}
               <section aria-label="Cards gerados" className="generated-cards">
               {generatedCards.map((card, index) => (
                 <article key={`${card.sentence}-${index}`} className="generated-card">
