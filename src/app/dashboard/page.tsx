@@ -37,7 +37,10 @@ export default function DashboardPage() {
   const [verb, setVerb] = useState('');
   const [level, setLevel] = useState('');
   const [generationMessage, setGenerationMessage] = useState('');
-  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; imageStatus: 'gerada' | 'reutilizada' }>>([]);
+  const [voice, setVoice] = useState('nova');
+  const [accent, setAccent] = useState('americano');
+  const [speed, setSpeed] = useState('1');
+  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; imageStatus: 'gerada' | 'reutilizada'; audioStatus: 'gerado' }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -59,6 +62,7 @@ export default function DashboardPage() {
     setGeneratedCards(Array.from({ length: 10 }, (_, index) => ({
       sentence: `Exemplo ${index + 1}: I ${verb} something.`,
       imageStatus: index === 0 ? 'gerada' : 'reutilizada',
+      audioStatus: 'gerado',
     })));
     setGenerationHistory((history) => new Set(history).add(historyKey));
   }
@@ -91,6 +95,26 @@ export default function DashboardPage() {
           <ModelPicker label="Imagem" models={models.imagem} />
           <ModelPicker label="Tradução" models={models.traducao} />
           <ModelPicker label="Áudio" models={models.audio} />
+          <fieldset className="audio-settings">
+            <legend>Preferências de áudio</legend>
+            <label htmlFor="audio-voice">Voz do áudio</label>
+            <select id="audio-voice" value={voice} onChange={(event) => setVoice(event.target.value)}>
+              <option value="nova">Nova</option>
+              <option value="alloy">Alloy</option>
+              <option value="shimmer">Shimmer</option>
+            </select>
+            <label htmlFor="audio-accent">Sotaque do áudio</label>
+            <select id="audio-accent" value={accent} onChange={(event) => setAccent(event.target.value)}>
+              <option value="americano">Americano</option>
+              <option value="britânico">Britânico</option>
+            </select>
+            <label htmlFor="audio-speed">Velocidade do áudio</label>
+            <select id="audio-speed" value={speed} onChange={(event) => setSpeed(event.target.value)}>
+              <option value="0.75">0,75×</option>
+              <option value="1">1×</option>
+              <option value="1.25">1,25×</option>
+            </select>
+          </fieldset>
           <button className="primary-button" type="submit">Salvar configuração</button>
         </form>
 
@@ -123,6 +147,10 @@ export default function DashboardPage() {
                   </div>
                   <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
                   <p className="field-help">Tradução pendente</p>
+                  <audio controls aria-label={`Áudio da frase ${index + 1}`} preload="none">
+                    <track kind="captions" />
+                  </audio>
+                  <p className="field-help"><span>{card.audioStatus === 'gerado' ? 'Áudio gerado' : 'Áudio pendente'}</span> · voz {voice}, sotaque {accent}, velocidade {speed}×</p>
                 </article>
               ))}
             </section>

@@ -75,6 +75,29 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByText(/Imagem (gerada|reutilizada)/)).toHaveLength(10);
   });
 
+  it('configura voz, sotaque e velocidade do áudio', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Voz do áudio'), { target: { value: 'alloy' } });
+    fireEvent.change(screen.getByLabelText('Sotaque do áudio'), { target: { value: 'britânico' } });
+    fireEvent.change(screen.getByLabelText('Velocidade do áudio'), { target: { value: '0.75' } });
+
+    expect(screen.getByLabelText('Voz do áudio')).toHaveValue('alloy');
+    expect(screen.getByLabelText('Sotaque do áudio')).toHaveValue('britânico');
+    expect(screen.getByLabelText('Velocidade do áudio')).toHaveValue('0.75');
+  });
+
+  it('exibe áudio reproduzível em cada card gerado', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getAllByLabelText(/Áudio da frase/)).toHaveLength(10);
+    expect(screen.getAllByText('Áudio gerado')).toHaveLength(10);
+  });
+
   it('evita gerar novamente uma combinação já presente no histórico', () => {
     render(<DashboardPage />);
 
