@@ -4,12 +4,17 @@ import { FormEvent, useState } from 'react';
 
 export default function RegisterPage() {
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const email = String(form.get('email') ?? '').trim();
     const password = String(form.get('password') ?? '');
     const confirmation = String(form.get('confirmation') ?? '');
+
+    setSuccess('');
 
     if (password.length < 8) {
       setError('A senha deve ter pelo menos 8 caracteres.');
@@ -19,7 +24,28 @@ export default function RegisterPage() {
       setError('As senhas não coincidem.');
       return;
     }
+
     setError('');
+    setSubmitting(true);
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, password, confirmation }),
+      });
+      const payload = (await response.json()) as { email?: string; error?: string };
+
+      if (!response.ok) {
+        setError(payload.error ?? 'Não foi possível criar a conta.');
+        return;
+      }
+
+      setSuccess(`Conta criada para ${payload.email}. Você já pode entrar.`);
+    } catch {
+      setError('Não foi possível conectar ao servidor. Tente novamente.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -36,7 +62,10 @@ export default function RegisterPage() {
           <label htmlFor="confirmation">Confirmar senha</label>
           <input id="confirmation" name="confirmation" type="password" required autoComplete="new-password" />
           {error && <p className="form-error" role="alert">{error}</p>}
-          <button className="primary-button" type="submit">Criar conta</button>
+          {success && <p className="form-success" role="status">{success}</p>}
+          <button className="primary-button" type="submit" disabled={submitting}>
+            {submitting ? 'Criando conta…' : 'Criar conta'}
+          </button>
         </form>
       </section>
     </main>

@@ -1,8 +1,17 @@
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import DashboardPage from './page';
 
-afterEach(cleanup);
+const pushMock = vi.fn();
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: pushMock }),
+}));
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+  pushMock.mockClear();
+});
 
 describe('configuração de provedores', () => {
   it('permite salvar a chave OpenRouter sem expô-la novamente', async () => {
@@ -329,5 +338,16 @@ describe('configuração de provedores', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('A chave OpenRouter deve iniciar com "sk-or-".');
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  it('permite sair da conta chamando /api/auth/logout e redireciona para /login', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ ok: true }) });
+    vi.stubGlobal('fetch', fetchMock);
+    render(<DashboardPage />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sair' }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/api/auth/logout', expect.objectContaining({ method: 'POST' })));
+    await waitFor(() => expect(pushMock).toHaveBeenCalledWith('/login'));
   });
 });

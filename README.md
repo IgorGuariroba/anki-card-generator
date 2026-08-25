@@ -4,7 +4,7 @@ Aplicação web responsiva para gerar, revisar e exportar cards de inglês para 
 
 ## Requisitos
 
-- Node.js `>=20.9.0`
+- Node.js `>=22.5.0` (necessário para `node:sqlite`, usado pela persistência em `src/lib/db.ts`)
 - npm
 
 ## Executar localmente
