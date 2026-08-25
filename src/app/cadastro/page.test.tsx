@@ -26,4 +26,13 @@ describe('cadastro', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent(/senhas não coincidem/i);
   });
+
+  it('bloqueia senha com menos de 8 caracteres mesmo quando a confirmação coincide', () => {
+    render(<RegisterPage />);
+    fireEvent.change(screen.getByLabelText(/^senha$/i), { target: { value: 'curta1' } });
+    fireEvent.change(screen.getByLabelText(/confirmar senha/i), { target: { value: 'curta1' } });
+    fireEvent.click(screen.getByRole('button', { name: /criar conta/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/pelo menos 8 caracteres/i);
+  });
 });
