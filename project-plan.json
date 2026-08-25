@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T00:45:00-03:00",
+  "updatedAt": "2026-08-25T02:00:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -665,12 +665,15 @@
           "status": "completed",
           "agent": "pi",
           "completedAt": "2026-08-25T00:45:00-03:00",
-          "note": "Cards reorganizados em grade responsiva com hierarquia visual, placeholder textual sem emoji e bloco de áudio estilizado; validação visual executada em navegador visível."
+          "note": "Grade ajustada para uma coluna, com largura máxima de 720px e espaçamento suficiente para leitura dos cartões; inputs sem overflow, hierarquia de labels e placeholder textual preservados. Botão secundário mantém os tokens, contraste, foco e estados hover. Validação Playwright headed executada com geração get/iniciante; grade confirmada visualmente. Evidências: evidencias-e2e/review-cards-one-column-2026-08-25.png e evidencias-e2e/review-cards-one-column-2026-08-25.webm."
         },
         {
           "id": "review-2",
           "title": "Editar frase e tradução",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T01:05:00-03:00",
+          "note": "Campos editáveis de frase e tradução adicionados com labels acessíveis; alterações refletem no card sem alterar a quantidade de cards. Cobertura TDD, npm run verify e validação Playwright headed aprovados. Evidências: evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e evidencias-e2e/review-2-edit-2026-08-25-rerun.png."
         },
         {
           "id": "review-3",
@@ -706,7 +709,7 @@
           {
             "name": "Secret Scanning",
             "description": "Busca de segredos versionados ou expostos",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "DAST",
@@ -722,10 +725,10 @@
         "evidence": {
           "date": "2026-08-25",
           "agent": "pi",
-          "SAST": "npm run verify — typecheck, lint, testes (22) e build aprovados.",
+          "SAST": "npm run verify — typecheck, lint, testes (23) e build aprovados.",
           "SCA": "npm audit --audit-level=high — 0 vulnerabilidades.",
-          "Secret Scanning": "Ainda não executado nesta subetapa; pendente antes da conclusão da etapa.",
-          "DAST": "playwright-cli --headed: login, geração de cards e screenshot/video do layout; evidências evidencias-e2e/review-layout-visible.png e evidencias-e2e/review-layout-visible.webm. Console do Next Dev Tools registrou erro de desenvolvimento, sem impacto visual observado.",
+          "Secret Scanning": "git grep -nE por padrões de chaves/privadas executado em 2026-08-25; nenhum segredo real. Ocorrências são nomes de campos password e fixture explícita sk-or-v1-example-secret usada para testar não exposição.",
+          "DAST": "playwright-cli headed executado em 2026-08-25: login, geração make/iniciante, edição da frase e tradução do card 1, confirmação pelos comandos find e screenshot. Evidências: evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e evidencias-e2e/review-2-edit-2026-08-25-rerun.png. O primeiro roteiro falhou por locator não estrito e foi corrigido; não é considerado evidência de sucesso. Console do Next Dev Tools registrou erro de desenvolvimento já conhecido, sem impedir o fluxo.",
           "API Security Testing": "Não aplicável nesta subetapa: não houve alteração de endpoints/API.",
           "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração de mídia fica para backend."
         }
