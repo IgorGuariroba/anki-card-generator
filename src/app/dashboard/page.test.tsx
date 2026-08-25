@@ -64,6 +64,18 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByText(/Frase \d+ de 10/)).toHaveLength(10);
   });
 
+  it('evita gerar novamente uma combinação já presente no histórico', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Essa combinação já foi gerada nesta sessão.');
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+  });
+
   it('rejeita geração sem verbo ou nível', () => {
     render(<DashboardPage />);
 
