@@ -26,6 +26,10 @@ h1 { color: var(--color-eager-green); font-size: clamp(48px, 10vw, 64px); line-h
 .form-success { color: #277a08; font-weight: 700; margin: 8px 0 0; }
 .auth-card a { color: var(--color-spark-blue); font-weight: 700; margin-top: 8px; }
 .settings-card { width: min(100%, 560px); padding: 32px 24px; }
+.flow-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+.flow-nav a { border-bottom: 2px solid var(--color-spark-blue); color: #0879ad; font-weight: 700; padding: 6px 2px; }
+.flow-nav a:focus-visible { outline: 3px solid var(--color-spark-blue); outline-offset: 3px; }
+.flow-anchor { scroll-margin-top: 16px; }
 .settings-card h1 { font-size: clamp(40px, 10vw, 56px); }
 .settings-card form { display: grid; gap: 8px; text-align: left; }
 .settings-card label { font-weight: 700; margin-top: 8px; }
