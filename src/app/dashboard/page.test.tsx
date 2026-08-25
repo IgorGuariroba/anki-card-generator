@@ -64,6 +64,17 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByText(/Frase \d+ de 10/)).toHaveLength(10);
   });
 
+  it('exibe imagem gerada ou reutilizada em cada card', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    expect(screen.getAllByRole('img')).toHaveLength(10);
+    expect(screen.getAllByText(/Imagem (gerada|reutilizada)/)).toHaveLength(10);
+  });
+
   it('evita gerar novamente uma combinação já presente no histórico', () => {
     render(<DashboardPage />);
 
