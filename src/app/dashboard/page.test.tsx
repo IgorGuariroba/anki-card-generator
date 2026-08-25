@@ -107,6 +107,23 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByRole('article')).toHaveLength(10);
   });
 
+  it('permite adicionar tags, observações e pronúncia personalizada a um card', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    fireEvent.change(screen.getByLabelText('Tags do card 1'), { target: { value: 'rotina, trabalho' } });
+    fireEvent.change(screen.getByLabelText('Observações do card 1'), { target: { value: 'Usar em contexto profissional.' } });
+    fireEvent.change(screen.getByLabelText('Pronúncia personalizada do card 1'), { target: { value: 'meik' } });
+
+    expect(screen.getByLabelText('Tags do card 1')).toHaveValue('rotina, trabalho');
+    expect(screen.getByLabelText('Observações do card 1')).toHaveValue('Usar em contexto profissional.');
+    expect(screen.getByLabelText('Pronúncia personalizada do card 1')).toHaveValue('meik');
+    expect(screen.getAllByRole('article')).toHaveLength(10);
+  });
+
   it('permite substituir o áudio de um card individual', () => {
     render(<DashboardPage />);
 

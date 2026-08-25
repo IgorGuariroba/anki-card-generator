@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T03:15:00-03:00",
+  "updatedAt": "2026-08-25T22:07:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -686,7 +686,10 @@
         {
           "id": "review-4",
           "title": "Adicionar tags, observações e pronúncia",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T22:07:00-03:00",
+          "note": "Cards agora permitem editar tags, observações e pronúncia personalizada com labels acessíveis; os valores permanecem isolados por card. O textarea de observações foi alinhado ao padrão visual dos inputs, com tokens de borda, raio, tipografia, foco e altura mínima. Teste TDD adicionado e npm run verify aprovado em 2026-08-25T22:09:05-03:00."
         },
         {
           "id": "review-5",
@@ -733,7 +736,8 @@
           "Secret Scanning": "git grep -nE por padrões de chaves/privadas executado após review-3; nenhum segredo real. Ocorrências são nomes de campos password e fixture explícita sk-or-v1-example-secret usada para testar não exposição.",
           "DAST": "playwright-cli headed executado em 2026-08-25 para review-3: login, dashboard, geração make/iniciante, clique em 'Regenerar imagem do card 1' e 'Regenerar áudio do card 1' (exact:true para evitar ambiguidade com card 10), confirmação via find e screenshot. Evidências: evidencias-e2e/review-3-regenerate-2026-08-25.webm e evidencias-e2e/review-3-regenerate-2026-08-25.png. Nova rodada em 2026-08-25T02:15:00-03:00 após correção do áudio (agora associado ao inglês, não à tradução): login, dashboard, geração make/iniciante, confirmação via find de que o bloco de áudio 'Pronúncia do texto em inglês'/'Áudio da frase em inglês N' aparece logo após o campo de frase em inglês e antes da tradução. Evidências: evidencias-e2e/review-3-audio-fix-2026-08-25.webm e evidencias-e2e/review-3-audio-fix-2026-08-25.png. Console do Next Dev Tools registrou erro de desenvolvimento já conhecido, sem impedir o fluxo. Anterior (review-2): evidencias-e2e/review-2-edit-2026-08-25-rerun.webm e .png.",
           "API Security Testing": "Não aplicável nesta subetapa: não houve alteração de endpoints/API.",
-          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras. review-4 e review-5 ainda pendentes, então o gate postImplementation da etapa review permanece pending até a etapa ser concluida por completo.",
+          "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras. review-5 ainda está pendente, então o gate postImplementation da etapa review permanece pending até a etapa ser concluída por completo.",
+          "review4": "SAST: npm run verify executado em 2026-08-25T22:09:05-03:00, com typecheck, 27 testes, lint e build aprovados. SCA: npm audit --audit-level=high executado pelo verify, 0 vulnerabilidades. Secret Scanning: git grep executado; resultados limitados a nomes de campos password, histórico do plano e fixture explícita sk-or-v1-example-secret, sem segredo real. DAST: não executado nesta subetapa; requer validação visual/browser e permanece como limitação registrada até a conclusão da etapa. API Security Testing: não aplicável, pois não houve alteração de endpoints/API.",
           "repository-governance": "Em 2026-08-25T03:05:00-03:00 a pasta evidencias-e2e/ passou a ser ignorada pelo git: adicionada a .gitignore e removida do índice (commit f787335, PR #17, merge a24f746 na main). ATENÇÃO: apesar da intenção de preservar os arquivos em disco via 'git rm -r --cached', o squash-merge remoto registrou a deleção real dos blobs; o 'git pull --ff-only' subsequente na main local apagou fisicamente os arquivos de evidencias-e2e/ do disco. Portanto os caminhos de evidência citados neste securityVerification (ex.: review-3-audio-fix-2026-08-25.webm/png, review-3-regenerate-2026-08-25.webm/png) NÃO estão mais disponíveis localmente nem no histórico atual da main; permanecem apenas como referência histórica no relatório da sessão em que foram gerados e capturados via playwright-cli. Confirmado com 'git status' e 'find' após o merge: pasta vazia. A partir de agora, novos arquivos criados em evidencias-e2e/ são corretamente ignorados pelo git (validado criando e removendo um arquivo de teste), mas não há mecanismo de backup automatico; evidências futuras exigem cópia manual fora do repositório se precisarem sobreviver a operações de checkout/pull destrutivas."
         }
       },

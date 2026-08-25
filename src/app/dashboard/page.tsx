@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [voice, setVoice] = useState('nova');
   const [accent, setAccent] = useState('americano');
   const [speed, setSpeed] = useState('1');
-  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado' }>>([]);
+  const [generatedCards, setGeneratedCards] = useState<Array<{ sentence: string; translation: string; tags: string; notes: string; pronunciation: string; imageStatus: 'gerada' | 'reutilizada' | 'regenerada'; audioStatus: 'gerado' | 'regenerado' }>>([]);
   const [generationHistory, setGenerationHistory] = useState<Set<string>>(new Set());
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -62,6 +62,9 @@ export default function DashboardPage() {
     setGeneratedCards(Array.from({ length: 10 }, (_, index) => ({
       sentence: `Exemplo ${index + 1}: I ${verb} something.`,
       translation: `Exemplo ${index + 1}: Eu ${verb} alguma coisa.`,
+      tags: '',
+      notes: '',
+      pronunciation: '',
       imageStatus: index === 0 ? 'gerada' : 'reutilizada',
       audioStatus: 'gerado',
     })));
@@ -87,6 +90,9 @@ export default function DashboardPage() {
     setGeneratedCards((cards) => [...cards, ...Array.from({ length: missing }, (_, index) => ({
       sentence: `Card regenerado ${cards.length + index + 1}: I ${verb} something.`,
       translation: `Card regenerado ${cards.length + index + 1}: Eu ${verb} alguma coisa.`,
+      tags: '',
+      notes: '',
+      pronunciation: '',
       imageStatus: 'gerada' as const,
       audioStatus: 'gerado' as const,
     }))]);
@@ -188,6 +194,12 @@ export default function DashboardPage() {
                   </div>
                   <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
                   <button className="secondary-button" type="button" onClick={() => handleRegenerateImage(index)}>Regenerar imagem do card {index + 1}</button>
+                  <label htmlFor={`tags-${index}`}>Tags</label>
+                  <input id={`tags-${index}`} aria-label={`Tags do card ${index + 1}`} value={card.tags} placeholder="ex.: rotina, trabalho" onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, tags: event.target.value } : item))} />
+                  <label htmlFor={`notes-${index}`}>Observações</label>
+                  <textarea id={`notes-${index}`} aria-label={`Observações do card ${index + 1}`} value={card.notes} placeholder="Anotações para revisar depois" onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, notes: event.target.value } : item))} />
+                  <label htmlFor={`pronunciation-${index}`}>Pronúncia personalizada</label>
+                  <input id={`pronunciation-${index}`} aria-label={`Pronúncia personalizada do card ${index + 1}`} value={card.pronunciation} placeholder="ex.: meik" onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, pronunciation: event.target.value } : item))} />
                 </article>
               ))}
               </section>
