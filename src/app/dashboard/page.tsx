@@ -195,8 +195,15 @@ export default function DashboardPage() {
                     </label>
                     <button className="secondary-button" type="button" onClick={() => handleDeleteCard(index)}>Excluir card {index + 1}</button>
                   </div>
+                  <p className="card-side-label">Frente do card</p>
                   <label htmlFor={`sentence-${index}`}>Frase em inglês</label>
                   <input id={`sentence-${index}`} aria-label={`Frase em inglês do card ${index + 1}`} value={card.sentence} onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, sentence: event.target.value } : item))} />
+                  <div className="card-image" role="img" aria-label={`Imagem que ilustra o significado da frase em inglês: ${card.sentence}`}>
+                    <span>Visual da frase em inglês</span>
+                    <small>aguardando mídia</small>
+                  </div>
+                  <p className="field-help">Imagem {card.imageStatus} · ajuda a fixar o significado da frase em inglês · representação visual pendente</p>
+                  <button className="secondary-button" type="button" onClick={() => handleRegenerateImage(index)}>Regenerar imagem do card {index + 1}</button>
                   <div className="audio-control">
                     <span className="audio-label">Pronúncia do texto em inglês</span>
                     <audio controls aria-label={`Áudio da frase em inglês ${index + 1}`} preload="none">
@@ -205,14 +212,9 @@ export default function DashboardPage() {
                   </div>
                   <p className="field-help"><span>{card.audioStatus === 'gerado' ? 'Áudio gerado' : card.audioStatus === 'regenerado' ? 'Áudio regenerado' : 'Áudio pendente'}</span> · voz {voice}, sotaque {accent}, velocidade {speed}×</p>
                   <button className="secondary-button" type="button" onClick={() => handleRegenerateAudio(index)}>Regenerar áudio do card {index + 1}</button>
+                  <p className="card-side-label">Verso do card</p>
                   <label htmlFor={`translation-${index}`}>Tradução em português</label>
                   <input id={`translation-${index}`} aria-label={`Tradução em português do card ${index + 1}`} value={card.translation} onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, translation: event.target.value } : item))} />
-                  <div className="card-image" role="img" aria-label={`Imagem ${card.sentence}`}>
-                    <span>Visual da frase</span>
-                    <small>aguardando mídia</small>
-                  </div>
-                  <p className="field-help">Imagem {card.imageStatus} · representação visual pendente</p>
-                  <button className="secondary-button" type="button" onClick={() => handleRegenerateImage(index)}>Regenerar imagem do card {index + 1}</button>
                   <label htmlFor={`tags-${index}`}>Tags</label>
                   <input id={`tags-${index}`} aria-label={`Tags do card ${index + 1}`} value={card.tags} placeholder="ex.: rotina, trabalho" onChange={(event) => setGeneratedCards((cards) => cards.map((item, itemIndex) => itemIndex === index ? { ...item, tags: event.target.value } : item))} />
                   <label htmlFor={`notes-${index}`}>Observações</label>

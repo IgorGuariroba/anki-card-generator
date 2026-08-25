@@ -666,7 +666,7 @@
           "status": "completed",
           "agent": "pi",
           "completedAt": "2026-08-25T00:45:00-03:00",
-          "note": "Grade ajustada para uma coluna, com largura máxima de 720px e espaçamento suficiente para leitura dos cartões; inputs sem overflow, hierarquia de labels e placeholder textual preservados. Botão secundário mantém os tokens, contraste, foco e estados hover. Validação Playwright headed executada com geração get/iniciante; grade confirmada visualmente. Evidências: evidencias-e2e/review-cards-one-column-2026-08-25.png e evidencias-e2e/review-cards-one-column-2026-08-25.webm."
+          "note": "Grade ajustada para uma coluna, com largura máxima de 720px e espaçamento suficiente para leitura dos cartões; inputs sem overflow, hierarquia de labels e placeholder textual preservados. Botão secundário mantém os tokens, contraste, foco e estados hover. Validação Playwright headed executada com geração get/iniciante; grade confirmada visualmente. Evidências: evidencias-e2e/review-cards-one-column-2026-08-25.png e evidencias-e2e/review-cards-one-column-2026-08-25.webm. Correção em 2026-08-25T01:35-03:00 a pedido do usuário: a ordem visual dos campos dentro de cada card estava misturando frente e verso do Anki (frase → áudio → tradução → imagem). Reagrupados os campos para refletir exatamente o note-type de src/lib/anki-template.ts: 'Frente do card' (frase em inglês, imagem, áudio, nessa ordem) seguida de 'Verso do card' (tradução em pt-BR, tags, observações, pronúncia). Adicionados rótulos visuais '.card-side-label' (globals.css) para deixar a divisão explícita na UI. Cobertura TDD: novo teste 'mantém frase, imagem e áudio agrupados como frente do card, antes da tradução (verso)' em dashboard/page.test.tsx (vermelho confirmado com 'expected 16 to be less than 15' antes da reordenação, verde depois). npm run verify (37 testes, lint, typecheck, build, audit) aprovado. Validação visual via playwright-cli --headed: login, dashboard, geração make/iniciante, confirmado via 'playwright-cli find' que o card 1 exibe 'Frente do card' antes de frase/imagem/áudio e 'Verso do card' antes de tradução/tags/observações/pronúncia. Evidências: evidencias-e2e/review-frente-verso-2026-08-25.webm e evidencias-e2e/review-frente-verso-card1-2026-08-25.png."
         },
         {
           "id": "review-2",
@@ -745,7 +745,8 @@
           "limitation": "A implementação ainda usa o elemento audio nativo sem mídia real e placeholder textual para imagem; integração real de mídia (backend/provedores) fica para etapas futuras.",
           "review5": "SAST: npm run verify em 2026-08-25T22:20:00-03:00, com 30 testes, lint, typecheck e build aprovados. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves/privadas, sem segredo real. DAST: playwright-cli --headed: login, /dashboard, geração make/iniciante, aprovação do card 1 (contador '1 de 10 cards aprovados' e botão 'Confirmar geração final' habilitado após aprovar, desabilitado antes), exclusão do card 2 (confirmado via find que 'Frase 10' deixou de existir e 'Frase 9' é o último). Evidências em evidencias-e2e/review-5-approve-delete-2026-08-25.png e evidencias-e2e/review-5-approve-delete-2026-08-24.webm (pasta ignorada pelo git; disponíveis apenas no disco local desta sessão). API Security Testing: não aplicável, sem endpoints de API.",
           "review4": "SAST: npm run verify executado em 2026-08-25T22:09:05-03:00, com typecheck, 27 testes, lint e build aprovados. SCA: npm audit --audit-level=high executado pelo verify, 0 vulnerabilidades. Secret Scanning: git grep executado; resultados limitados a nomes de campos password, histórico do plano e fixture explícita sk-or-v1-example-secret, sem segredo real. DAST: não executado nesta subetapa; requer validação visual/browser e permanece como limitação registrada até a conclusão da etapa. API Security Testing: não aplicável, pois não houve alteração de endpoints/API.",
-          "repository-governance": "Em 2026-08-25T03:05:00-03:00 a pasta evidencias-e2e/ passou a ser ignorada pelo git: adicionada a .gitignore e removida do índice (commit f787335, PR #17, merge a24f746 na main). ATENÇÃO: apesar da intenção de preservar os arquivos em disco via 'git rm -r --cached', o squash-merge remoto registrou a deleção real dos blobs; o 'git pull --ff-only' subsequente na main local apagou fisicamente os arquivos de evidencias-e2e/ do disco. Portanto os caminhos de evidência citados neste securityVerification (ex.: review-3-audio-fix-2026-08-25.webm/png, review-3-regenerate-2026-08-25.webm/png) NÃO estão mais disponíveis localmente nem no histórico atual da main; permanecem apenas como referência histórica no relatório da sessão em que foram gerados e capturados via playwright-cli. Confirmado com 'git status' e 'find' após o merge: pasta vazia. A partir de agora, novos arquivos criados em evidencias-e2e/ são corretamente ignorados pelo git (validado criando e removendo um arquivo de teste), mas não há mecanismo de backup automatico; evidências futuras exigem cópia manual fora do repositório se precisarem sobreviver a operações de checkout/pull destrutivas."
+          "repository-governance": "Em 2026-08-25T03:05:00-03:00 a pasta evidencias-e2e/ passou a ser ignorada pelo git: adicionada a .gitignore e removida do índice (commit f787335, PR #17, merge a24f746 na main). ATENÇÃO: apesar da intenção de preservar os arquivos em disco via 'git rm -r --cached', o squash-merge remoto registrou a deleção real dos blobs; o 'git pull --ff-only' subsequente na main local apagou fisicamente os arquivos de evidencias-e2e/ do disco. Portanto os caminhos de evidência citados neste securityVerification (ex.: review-3-audio-fix-2026-08-25.webm/png, review-3-regenerate-2026-08-25.webm/png) NÃO estão mais disponíveis localmente nem no histórico atual da main; permanecem apenas como referência histórica no relatório da sessão em que foram gerados e capturados via playwright-cli. Confirmado com 'git status' e 'find' após o merge: pasta vazia. A partir de agora, novos arquivos criados em evidencias-e2e/ são corretamente ignorados pelo git (validado criando e removendo um arquivo de teste), mas não há mecanismo de backup automatico; evidências futuras exigem cópia manual fora do repositório se precisarem sobreviver a operações de checkout/pull destrutivas.",
+          "review1-fix-frente-verso": "Correção pós-conclusão em 2026-08-25T01:36:00-03:00 a pedido do usuário (imagem, frase em inglês e áudio na frente; tradução em pt-BR no verso). SAST: npm run verify (37 testes, lint, typecheck, build) aprovado. SCA: npm audit --audit-level=high, 0 vulnerabilidades. Secret Scanning: git grep por padrões de chaves/privadas em src, sem segredo real (apenas nomes de campo 'password' e fixture de teste sk-or-v1-example-secret já conhecida). DAST: playwright-cli --headed, login, /dashboard, geração make/iniciante, 'playwright-cli find' confirmando ordem real no DOM ('Frente do card' antes de frase/imagem/áudio, 'Verso do card' antes de tradução/tags/observações/pronúncia). Evidências em disco local (evidencias-e2e/ ignorado pelo git): evidencias-e2e/review-frente-verso-2026-08-25.webm e evidencias-e2e/review-frente-verso-card1-2026-08-25.png. API Security Testing: não aplicável, sem endpoints de API."
         }
       },
       "gates": {
@@ -776,31 +777,45 @@
     {
       "id": "export",
       "title": "Exportação para Anki",
-      "status": "pending",
-      "agent": null,
+      "status": "in_progress",
+      "agent": "pi",
       "dependsOn": [
         "review"
       ],
+      "research": {
+        "code": "src/app/dashboard/page.tsx contém os campos por card (sentence, translation, tags, notes, pronunciation, imageStatus, audioStatus, approved) já usados na revisão; o template do Anki reutilizará exatamente esses nomes de campo para não exigir mapeamento adicional na exportação futura. Novo módulo isolado será criado em src/lib/anki-template.ts com cobertura em src/lib/anki-template.test.ts, seguindo o padrão Vitest já usado no projeto.",
+        "docs": "genanki-js@2.0.0 (instalável via npm, fork em navegador do mkanki) documentação em https://github.com/krmanik/genanki-js e https://krmanik.github.io/genanki-js/#/: Model define name/id/flds/tmpls/css; tmpls usa qfmt (frente) e afmt (verso, com {{FrontSide}}); campos de mídia usam sintaxe padrão do Anki {{Image}}/[sound:Audio]. SPEC.md decide: frente = frase, imagem e áudio; verso = tradução pt-BR e pode conter observações/pronúncia; deck único 'English Light Verbs'.",
+        "guardrails": [
+          "O note-type deve declarar exatamente os campos usados na revisão: Sentence, Translation, Tags, Notes, Pronunciation, Image e Audio.",
+          "A frente (qfmt) deve exibir a frase em inglês, a imagem e o áudio; nunca a tradução em português.",
+          "O verso (afmt) deve exibir {{FrontSide}} seguido da tradução em pt-BR e, quando preenchidos, observações e pronúncia personalizada.",
+          "O nome e o id do modelo devem ser estáveis e determinísticos entre chamadas para permitir atualização incremental de decks existentes no Anki.",
+          "A função de construção do template não deve depender de DOM/browser nem de rede, para permanecer testável com Vitest puro."
+        ]
+      },
       "substeps": [
         {
           "id": "export-research-code",
           "title": "Pesquisar código afetado e oportunidades de reaproveitamento",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "export-research-docs",
           "title": "Pesquisar documentação oficial da versão instalada",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "export-define-guardrails",
           "title": "Definir guardrails determinísticos da implementação",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "export-1",
           "title": "Definir template da frente e do verso",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-24T22:30:00-03:00",
+          "note": "Criado src/lib/anki-template.ts com DECK_NAME='English Light Verbs' e ankiModel (id/name estáveis, campos Sentence/Translation/Tags/Notes/Pronunciation/Image/Audio espelhando os dados coletados na revisão). Frente (qfmt) exibe frase, imagem e áudio; verso (afmt) exibe {{FrontSide}}, tradução e, condicionalmente, pronúncia e observações. Cobertura TDD em src/lib/anki-template.test.ts (5 testes, vermelho confirmado antes da implementação via import inexistente, depois verde). Módulo puro, sem DOM/rede, pronto para ser consumido pela geração real do .apkg em export-2 (candidato: genanki-js, avaliado na pesquisa desta subetapa). npm run verify aprovado (35 testes, lint, typecheck, build, audit). Correção em 2026-08-24T22:35:00-03:00 a pedido do usuário: reforçado explicitamente (comentário no código, novo teste TDD e labels do dashboard) que a imagem ilustra o SIGNIFICADO DA FRASE EM INGLÊS, nunca a tradução — o código já vinculava {{Image}} a {{Sentence}} na frente e nunca a {{Translation}}, mas não havia guardrail explícito nem verificação automatizada dessa regra. Adicionado teste 'a imagem ilustra o significado da frase em inglês, nunca a tradução' em anki-template.test.ts e ajustadas as labels/mensagens do card de imagem em src/app/dashboard/page.tsx ('Visual da frase em inglês', aria-label e field-help explicando o propósito de fixação). npm run verify reexecutado (36 testes, lint, typecheck, build, audit) aprovado."
         },
         {
           "id": "export-2",
@@ -821,27 +836,27 @@
       "securityVerification": {
         "id": "export-security-verification",
         "title": "Verificação obrigatória de segurança pós-etapa",
-        "status": "pending",
+        "status": "in_progress",
         "requiredChecks": [
           {
             "name": "SAST",
             "description": "Análise estática do código",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "SCA",
             "description": "Análise de dependências e vulnerabilidades",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "Secret Scanning",
             "description": "Busca de segredos versionados ou expostos",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "DAST",
             "description": "Análise dinâmica da aplicação em execução",
-            "status": "pending"
+            "status": "completed"
           },
           {
             "name": "API Security Testing",
@@ -849,11 +864,22 @@
             "status": "pending"
           }
         ],
-        "evidence": "Registrar comandos, resultados, data, agente e limitações antes de concluir a etapa."
+        "evidence": {
+          "date": "2026-08-25",
+          "agent": "pi",
+          "export1": {
+            "SAST": "npm run verify (inclui typecheck e eslint) aprovado em 2026-08-24T22:30-03:00, 35 testes.",
+            "SCA": "npm audit --audit-level=high (executado pelo verify): 0 vulnerabilidades.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src/lib: nenhum resultado.",
+            "DAST": "Executado em 2026-08-25T01:33:00-03:00 via playwright-cli --headed: login em /login, redirecionamento autenticado para /dashboard, seleção make/iniciante e clique em 'Iniciar geração'. Confirmado via 'playwright-cli find' que o elemento role=img do card 1 tem aria-label 'Imagem que ilustra o significado da frase em inglês: Exemplo 1: I make something.' (nunca referenciando o campo de tradução), validando em runtime real de navegador a regra reforçada nesta subetapa a pedido do usuário. Evidências: evidencias-e2e/export-1-imagem-fixacao-2026-08-25.webm (vídeo completo do fluxo) e evidencias-e2e/export-1-card1-imagem-frase-ingles-2026-08-25.png (screenshot do card 1). Console do Next Dev Tools registrou 1 erro de desenvolvimento já conhecido de sessões anteriores, sem impedir o fluxo.",
+            "API Security Testing": "Não aplicável: não há endpoint de API nesta subetapa."
+          },
+          "limitation": "evidencias-e2e/ é ignorado pelo git (registrado em revisões anteriores); os arquivos desta validação existem apenas em disco local desta sessão, não no histórico do repositório. O gate pós-implementação da etapa export permanece in_progress até export-2/3/4 serem implementadas; API Security Testing da etapa continua pendente por não haver endpoints ainda."
+        }
       },
       "gates": {
         "preImplementation": {
-          "status": "pending",
+          "status": "completed",
           "requiredSubsteps": [
             "export-research-code",
             "export-research-docs",

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import DashboardPage from './page';
 
@@ -159,6 +159,27 @@ describe('configuração de provedores', () => {
     expect(screen.getAllByLabelText(/Áudio da frase em inglês/)).toHaveLength(10);
     expect(screen.getAllByText('Áudio gerado')).toHaveLength(10);
     expect(screen.getAllByText(/Pronúncia do texto em inglês/)).toHaveLength(10);
+  });
+
+  it('mantém frase, imagem e áudio agrupados como frente do card, antes da tradução (verso)', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Verbo'), { target: { value: 'make' } });
+    fireEvent.change(screen.getByLabelText('Nível'), { target: { value: 'iniciante' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar geração' }));
+
+    const article = screen.getAllByRole('article')[0];
+    const scoped = within(article);
+    const sentenceInput = scoped.getByLabelText('Frase em inglês do card 1');
+    const audioElement = scoped.getByLabelText('Áudio da frase em inglês 1');
+    const imageElement = scoped.getByRole('img', { name: /Imagem que ilustra/ });
+    const translationInput = scoped.getByLabelText('Tradução em português do card 1');
+
+    const position = (node: Element) => Array.from(article.querySelectorAll('*')).indexOf(node);
+
+    expect(position(sentenceInput)).toBeLessThan(position(imageElement));
+    expect(position(imageElement)).toBeLessThan(position(translationInput));
+    expect(position(audioElement)).toBeLessThan(position(translationInput));
   });
 
   it('não associa o áudio à tradução em português', () => {
