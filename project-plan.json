@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T11:03:00-03:00",
+  "updatedAt": "2026-08-25T11:45:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -1001,7 +1001,10 @@
         {
           "id": "quality-5",
           "title": "Validação visual mobile com os tokens de design",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T11:45:00-03:00",
+          "note": "Validado visualmente em viewport mobile real (playwright-cli --device=\"iPhone 15\") contra npm run dev (pid 382976, encerrado ao final): login, cadastro, dashboard/configurações, formulário de geração (verbo/nível), 10 cards revisados (frente com frase/imagem/áudio, verso com tradução/tags/observações/pronúncia), checkbox customizado de aprovação (quadrado 20x20 com checkmark verde, sem distorção em telas estreitas), histórico de gerações e clique real em 'Confirmar geração final' com download real do .apkg em viewport mobile. Todas as telas seguiram os tokens de design (cores --color-eager-green/--color-spark-blue, tipografia, raio de borda, espaçamento) sem overflow horizontal, com coluna única e hierarquia legível conforme SPEC.md linha 174. Nenhum ajuste de CSS foi necessário; a validação confirmou que o trabalho já realizado nas etapas review/export/quality anteriores atende ao layout mobile. Screenshots: evidencias-e2e/quality-5-mobile-login.png, quality-5-mobile-dashboard.png, quality-5-mobile-generation-form.png, quality-5-mobile-card1-top.png, quality-5-mobile-card1-verso.png, quality-5-mobile-confirm-export.png, quality-5-mobile-cadastro.png. Vídeo: evidencias-e2e/quality-5-mobile-visual-2026-08-25_11-40-41.webm. .apkg real gerado e validado com unzip -l (collection.anki21b/media/meta): evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão). Console do navegador sem erros/avisos relevantes (1 log de HMR e 1 404 de favicon.ico, já conhecido de sessões anteriores). npm run verify (66 testes, lint, typecheck, build, audit) reexecutado após a validação e aprovado, sem alterações de código nesta subetapa."
         },
         {
           "id": "quality-6",
@@ -1108,7 +1111,14 @@
             "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 263625) após encerrar processos órfãos anteriores (pids 263466 e 180498) nas portas 3000/3001, conforme AGENTS.md; encerrado ao final (pids 263625 e 263650, next-server). playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', aprovação real do card 1, clique real em 'Confirmar geração final'. Download real interceptado pelo playwright-cli (english-light-verbs-make-2026-08-25.apkg), copiado para evidencias-e2e/ e validado com 'unzip -l' confirmando collection.anki21b (126992 bytes)/media/meta dentro do .apkg real gerado pelo navegador (sql.js/ankipack reais, sem mock). Mensagem de sucesso 'Pacote english-light-verbs-make-2026-08-25.apkg gerado com os cards aprovados.' confirmada via role=status. Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-4-apkg-midia-2026-08-25.webm e evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
             "API Security Testing": "Não aplicável: a geração do .apkg ocorre inteiramente no navegador (sql.js/ankipack client-side), sem endpoint de API novo nesta subetapa."
           },
-          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-5 e quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
+          "quality5": {
+            "SAST": "npm run verify (gate script, audit, typecheck, 66 testes, lint, build) reexecutado em 2026-08-25T11:45-03:00 após a validação visual; nenhuma alteração de código foi necessária.",
+            "SCA": "npm audit --audit-level=high (parte do verify): 0 vulnerabilidades; nenhuma dependência nova.",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em todo o repositório, excluindo package-lock.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida, além de referências históricas dentro do próprio project-plan.json).",
+            "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 382976) e encerrado ao final (nenhum processo restante na porta 3000 confirmado via lsof). playwright-cli --device=\"iPhone 15\": login, cadastro, dashboard/configurações, geração make/iniciante (10 cards), revisão completa de frente/verso do card 1, aprovação do card 1 (checkbox customizado renderizado corretamente em mobile), clique real em 'Confirmar geração final' com download real interceptado pelo playwright-cli e validado com unzip -l. Console sem erros relevantes. Evidências: evidencias-e2e/quality-5-mobile-*.png e evidencias-e2e/quality-5-mobile-visual-2026-08-25_11-40-41.webm (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: validação puramente visual/mobile, sem alteração ou introdução de endpoints de API."
+          },
+          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-6 ser concluída; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após a subetapa restante."
         }
       },
       "gates": {
