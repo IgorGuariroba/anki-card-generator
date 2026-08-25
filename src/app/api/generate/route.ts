@@ -1,15 +1,16 @@
+import { getAppDb } from '@/lib/db'
 import { validateGenerationRequest } from '@/lib/backend-contract'
 
-function hasActiveSession(request: Request) {
+function readSessionToken(request: Request): string {
   const cookie = request.headers.get('cookie') ?? ''
-  return cookie.split(';').some((part) => {
-    const [name, ...value] = part.trim().split('=')
-    return name === 'anki_session' && value.join('=').trim().length > 0
-  })
+  const match = cookie.split(';').find((part) => part.trim().startsWith('anki_session='))
+  return match ? match.trim().slice('anki_session='.length) : ''
 }
 
 export async function POST(request: Request) {
-  if (!hasActiveSession(request)) {
+  const token = readSessionToken(request)
+  const session = token ? getAppDb().sessions.getSession(token) : null
+  if (!session) {
     return Response.json({ error: 'Autenticação necessária.' }, { status: 401 })
   }
 

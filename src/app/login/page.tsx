@@ -1,41 +1,48 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const email = String(form.get('email') ?? '').trim();
-    const password = String(form.get('password') ?? '');
+    const password = String(form.get('password') ?? '').trim();
 
     if (!email || !password) {
       setError('Informe e-mail e senha para entrar.');
       return;
     }
 
-    document.cookie = 'anki_session=active; Path=/; SameSite=Lax';
     setError('');
-    setAuthenticated(true);
-  }
+    setSubmitting(true);
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const payload = (await response.json()) as { email?: string; error?: string };
 
-  if (authenticated) {
-    return (
-      <main className="page-shell">
-        <section className="auth-card" aria-labelledby="welcome-title">
-          <p className="eyebrow">English Light Verbs</p>
-          <h1 id="welcome-title">Você está conectado</h1>
-          <p className="hero-copy">Pronto para continuar praticando seus cards.</p>
-          <button className="secondary-button" type="button" onClick={() => {
-            document.cookie = 'anki_session=; Path=/; Max-Age=0; SameSite=Lax';
-            setAuthenticated(false);
-          }}>Sair</button>
-        </section>
-      </main>
-    );
+      if (!response.ok) {
+        setError(payload.error ?? 'Não foi possível entrar.');
+        return;
+      }
+
+      // Login bem-sucedido: a sessão já foi definida via cookie HttpOnly pelo
+      // backend (POST /api/auth/login). Redireciona imediatamente para o
+      // dashboard, sem exigir clique extra do usuário, conforme SPEC.md
+      // (fluxo principal: Login → Configurações/dashboard).
+      router.push('/dashboard');
+    } catch {
+      setError('Não foi possível conectar ao servidor. Tente novamente.');
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -51,7 +58,9 @@ export default function LoginPage() {
           <input id="password" name="password" type="password" required autoComplete="current-password" />
           <a href="/recuperar-senha">Esqueci minha senha</a>
           {error && <p className="form-error" role="alert">{error}</p>}
-          <button className="primary-button" type="submit">Entrar</button>
+          <button className="primary-button" type="submit" disabled={submitting}>
+            {submitting ? 'Entrando…' : 'Entrar'}
+          </button>
         </form>
       </section>
     </main>

@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import initSqlJs from 'sql.js';
 import { buildAnkiPackage } from '@/lib/anki-package';
 import { triggerApkgDownload } from '@/lib/apkg-download';
@@ -36,6 +37,7 @@ function ModelPicker({ label, models: availableModels }: { label: string; models
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [openRouterKey, setOpenRouterKey] = useState('');
   const [saved, setSaved] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
@@ -59,6 +61,14 @@ export default function DashboardPage() {
 
   function handleDeleteGeneration(id: string) {
     setStoredGenerations((generations) => removeGeneration(generations, id));
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.push('/login');
+    }
   }
 
   function handleGeneration(event: FormEvent<HTMLFormElement>) {
@@ -188,6 +198,7 @@ export default function DashboardPage() {
           <a href="#nova-geracao">Nova geração</a>
           <a href="#historico">Histórico</a>
           <a href="#revisao-exportacao">Revisão e exportação</a>
+          <button className="secondary-button" type="button" onClick={handleLogout}>Sair</button>
         </nav>
         <p className="eyebrow">Configurações</p>
         <h1 id="dashboard-title">Seus provedores</h1>
