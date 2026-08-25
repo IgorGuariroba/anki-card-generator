@@ -65,6 +65,7 @@ A aplicação manterá o histórico por usuário para evitar repetições ao lon
 - Cada geração terá um verbo, um nível e 10 cards solicitados.
 - A dificuldade será definida principalmente por vocabulário e gramática.
 - A IA deverá retornar conteúdo estruturado para cada card: frase em inglês, tradução pt-BR, contexto/descrição visual, tags e metadados de validação.
+- Preferência de linguagem: as frases devem usar inglês coloquial e natural do dia a dia, incluindo expressões, phrasal verbs e combinações que ocorram naturalmente em conversas reais quando forem adequadas ao verbo e ao nível. Evitar frases artificiais, literais ou construídas apenas para conter o verbo; a naturalidade tem prioridade sobre a tradução palavra por palavra. Quando uma expressão não tiver tradução direta natural em pt-BR, a tradução deve transmitir seu significado/uso, sem forçar equivalência literal.
 - A aplicação validará duplicidade exata e duplicidade da combinação verbo-substantivo antes de aceitar um card. O histórico deverá ser consultado antes da geração e novamente antes da persistência.
 - A avaliação semântica avançada de frases semelhantes fica preparada para evolução, mas não é requisito do primeiro MVP.
 - O usuário poderá selecionar modelos independentes para texto, imagem e tradução entre opções recomendadas pelos provedores.
