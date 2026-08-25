@@ -16,6 +16,27 @@ describe('configuração de provedores', () => {
     expect(screen.getByText('••••••••')).toBeInTheDocument();
   });
 
+  it('não salva a chave do provedor TTS quando apenas um dos campos é preenchido', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Nome do provedor TTS'), { target: { value: 'ElevenLabs' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar provedor TTS' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe o nome do provedor e a chave TTS para salvar.');
+    expect(screen.queryByText('Provedor TTS configurado')).not.toBeInTheDocument();
+  });
+
+  it('permite salvar o provedor TTS externo quando ambos os campos são preenchidos', () => {
+    render(<DashboardPage />);
+
+    fireEvent.change(screen.getByLabelText('Nome do provedor TTS'), { target: { value: 'ElevenLabs' } });
+    fireEvent.change(screen.getByLabelText('Chave do provedor TTS'), { target: { value: 'tts-secret-key' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar provedor TTS' }));
+
+    expect(screen.getByText('Provedor TTS configurado: ElevenLabs')).toBeInTheDocument();
+    expect(screen.queryByText('tts-secret-key')).not.toBeInTheDocument();
+  });
+
   it('permite buscar e escolher um modelo disponível do provedor', () => {
     render(<DashboardPage />);
 

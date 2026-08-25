@@ -38,6 +38,9 @@ function ModelPicker({ label, models: availableModels }: { label: string; models
 export default function DashboardPage() {
   const [openRouterKey, setOpenRouterKey] = useState('');
   const [saved, setSaved] = useState(false);
+  const [ttsProvider, setTtsProvider] = useState('');
+  const [ttsKey, setTtsKey] = useState('');
+  const [ttsSaved, setTtsSaved] = useState(false);
   const [error, setError] = useState('');
   const [verb, setVerb] = useState('');
   const [level, setLevel] = useState('');
@@ -141,6 +144,19 @@ export default function DashboardPage() {
     }
   }
 
+  function handleTtsSubmit() {
+    const provider = ttsProvider.trim();
+    const key = ttsKey.trim();
+    if (!provider || !key) {
+      setTtsSaved(false);
+      setError('Informe o nome do provedor e a chave TTS para salvar.');
+      return;
+    }
+    setTtsKey('');
+    setError('');
+    setTtsSaved(true);
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedKey = openRouterKey.trim();
@@ -175,6 +191,15 @@ export default function DashboardPage() {
           <ModelPicker label="Imagem" models={models.imagem} />
           <ModelPicker label="Tradução" models={models.traducao} />
           <ModelPicker label="Áudio" models={models.audio} />
+          <section aria-label="Configuração de provedor TTS">
+            <label htmlFor="tts-provider">Nome do provedor TTS</label>
+            <input id="tts-provider" value={ttsProvider} onChange={(event) => setTtsProvider(event.target.value)} autoComplete="off" />
+            <label htmlFor="tts-key">Chave do provedor TTS</label>
+            <input id="tts-key" type="password" value={ttsKey} onChange={(event) => setTtsKey(event.target.value)} autoComplete="off" />
+            <p className="field-help">A chave TTS é protegida e não será exibida após o salvamento.</p>
+            {ttsSaved && <p className="form-success" role="status">Provedor TTS configurado: {ttsProvider.trim()}</p>}
+            <button className="secondary-button" type="button" onClick={handleTtsSubmit}>Salvar provedor TTS</button>
+          </section>
           <fieldset className="audio-settings">
             <legend>Preferências de áudio</legend>
             <label htmlFor="audio-voice">Voz do áudio</label>
