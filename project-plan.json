@@ -1,7 +1,7 @@
 {
   "project": "anki-card-generator",
   "version": 1,
-  "updatedAt": "2026-08-25T10:35:00-03:00",
+  "updatedAt": "2026-08-25T11:03:00-03:00",
   "statuses": [
     "pending",
     "in_progress",
@@ -993,7 +993,10 @@
         {
           "id": "quality-4",
           "title": "Testes do pacote .apkg e mídias",
-          "status": "pending"
+          "status": "completed",
+          "agent": "pi",
+          "completedAt": "2026-08-25T11:03:00-03:00",
+          "note": "Adicionados 2 testes TDD em src/lib/anki-package.test.ts (arquivo/seams já existentes de export-2, sem novo módulo): (1) round-trip real do deck e campos abrindo os bytes serializados com Collection.open (não o documento intermediário) e confirmando collection.deckNames() igual a DECK_NAME ('English Light Verbs'), exatamente 1 nota no deck (o card reprovado é filtrado), os 7 campos na ordem correta (Sentence/Translation/Tags/Notes/Pronunciation/Image/Audio vazio) e as tags separadas corretamente; (2) mídia reproduzível byte-a-byte comparando collection.data.media (lido de volta do .apkg serializado) com os bytes originais de imagem e áudio, cobrindo a exigência de SPEC.md linha 143 ('.apkg contém o deck correto, os campos esperados e as mídias reprodutíveis'). Vermelho real encontrado no meio do processo: a primeira tentativa de ler o manifesto de mídia via JSZip.loadAsync(bytes).file('media') falhou com 'Unexpected token, is not valid JSON' porque o schema V18 do ankipack não usa mais JSON puro no manifesto zip; corrigido usando a seam pública correta collection.data.media (MediaFile[] com name/data) em vez de inspecionar o zip manualmente, mantendo o teste dentro dos seams já usados pela biblioteca (Collection.open, já usado por Package.toCollection() internamente). npm run verify (66 testes, lint, typecheck, build) aprovado."
         },
         {
           "id": "quality-5",
@@ -1098,7 +1101,14 @@
             "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 172735) após encerrar processos órfãos anteriores (pids 172165 e 110448) nas portas 3000/3001, conforme AGENTS.md; encerrado ao final (pids 172735 e 172760, next-server). playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, clique duplo em 'Iniciar geração' confirmando via find o alerta real 'Essa combinação já foi gerada nesta sessão.' em runtime de navegador (não apenas em jsdom). Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-3-duplicidade-2026-08-25.webm e evidencias-e2e/quality-3-duplicidade-2026-08-25.png (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
             "API Security Testing": "Não aplicável: geração de cards e tratação de falha de provedor ocorrem inteiramente no navegador/estado do componente, sem endpoint de API novo nesta subetapa; a simulação local de card-generation.ts será substituída por chamada real ao provedor quando a integração de backend existir, mantendo o mesmo ponto único sem fallback automático."
           },
-          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-4 a quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
+          "quality4": {
+            "SAST": "npm run verify (gate script, audit, typecheck, 66 testes, lint, build) aprovado em 2026-08-25T11:03-03:00, após adicionar os 2 novos testes de round-trip real (deck/campos/tags e mídia byte-a-byte) em src/lib/anki-package.test.ts.",
+            "SCA": "npm audit --audit-level=high: 0 vulnerabilidades; nenhuma dependência nova adicionada (reutiliza ankipack/sql.js/jszip já presentes desde export-2).",
+            "Secret Scanning": "git grep -nE por padrões de chaves/privadas em src, excluindo package-lock.json e project-plan.json: nenhum segredo real (apenas nomes de campo password e fixture de teste sk-or-v1-example-secret já conhecida).",
+            "DAST": "servidor npm run dev iniciado via watch_processo_iniciar (pid 263625) após encerrar processos órfãos anteriores (pids 263466 e 180498) nas portas 3000/3001, conforme AGENTS.md; encerrado ao final (pids 263625 e 263650, next-server). playwright-cli --headed: login em /login, /dashboard, seleção make/iniciante, 'Iniciar geração', aprovação real do card 1, clique real em 'Confirmar geração final'. Download real interceptado pelo playwright-cli (english-light-verbs-make-2026-08-25.apkg), copiado para evidencias-e2e/ e validado com 'unzip -l' confirmando collection.anki21b (126992 bytes)/media/meta dentro do .apkg real gerado pelo navegador (sql.js/ankipack reais, sem mock). Mensagem de sucesso 'Pacote english-light-verbs-make-2026-08-25.apkg gerado com os cards aprovados.' confirmada via role=status. Console sem erros nem avisos (playwright-cli console: 0 errors, 0 warnings). Evidências: evidencias-e2e/quality-4-apkg-midia-2026-08-25.webm e evidencias-e2e/english-light-verbs-make-2026-08-25.apkg (pasta ignorada pelo git, disponível apenas em disco local desta sessão).",
+            "API Security Testing": "Não aplicável: a geração do .apkg ocorre inteiramente no navegador (sql.js/ankipack client-side), sem endpoint de API novo nesta subetapa."
+          },
+          "limitation": "O gate postImplementation da etapa quality permanece pendente até quality-5 e quality-6 serem concluídas; a verificação consolidada de SAST/SCA/Secret Scanning/DAST/API Security Testing da etapa inteira só será marcada como completed após todas as subetapas restantes."
         }
       },
       "gates": {

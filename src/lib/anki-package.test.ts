@@ -1,8 +1,10 @@
 import initSqlJs, { type SqlJsStatic } from 'sql.js';
 import JSZip from 'jszip';
+import { Collection } from 'ankipack';
 import path from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildAnkiPackage, buildAnkiPackageDocument, buildNotetype, type ReviewedCard } from './anki-package';
+import { DECK_NAME } from './anki-template';
 
 let SQL: SqlJsStatic;
 
@@ -77,5 +79,59 @@ describe('buildAnkiPackage', () => {
     const mediaNames = collection.media.map((entry) => entry.name);
     expect(mediaNames).toContain('img-1.png');
     expect(mediaNames).toContain('audio-1.mp3');
+  });
+
+  it('produz um .apkg cujo deck e campos podem ser abertos e lidos de volta pelo ankipack (round-trip real)', async () => {
+    const cards = [
+      makeCard({
+        sentence: 'I make breakfast.',
+        translation: 'Eu preparo o café da manhã.',
+        tags: 'rotina, trabalho',
+        notes: 'Contexto profissional.',
+        pronunciation: 'meik',
+      }),
+      makeCard({ sentence: 'Card reprovado', approved: false }),
+    ];
+
+    const bytes = await buildAnkiPackage(cards, SQL);
+    const collection = Collection.open(bytes, SQL);
+
+    expect(collection.deckNames()).toEqual([DECK_NAME]);
+
+    const notesInDeck = collection.notes({ deck: DECK_NAME });
+    expect(notesInDeck).toHaveLength(1);
+    expect(notesInDeck[0].fields).toEqual([
+      'I make breakfast.',
+      'Eu preparo o café da manhã.',
+      'rotina, trabalho',
+      'Contexto profissional.',
+      'meik',
+      '',
+      '',
+    ]);
+    expect(notesInDeck[0].tags).toEqual(['rotina', 'trabalho']);
+  });
+
+  it('anexa mídia reproduzível: os bytes lidos de volta do .apkg são idênticos aos originais', async () => {
+    const imageBytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+    const audioBytes = new Uint8Array([73, 68, 51, 3, 0, 0, 0]);
+    const cards = [
+      makeCard({
+        imageFilename: 'img-round-trip.png',
+        imageBytes,
+        audioFilename: 'audio-round-trip.mp3',
+        audioBytes,
+      }),
+    ];
+
+    const bytes = await buildAnkiPackage(cards, SQL);
+    const collection = Collection.open(bytes, SQL);
+
+    const readImage = collection.data.media.find((file) => file.name === 'img-round-trip.png');
+    const readAudio = collection.data.media.find((file) => file.name === 'audio-round-trip.mp3');
+    expect(readImage).toBeDefined();
+    expect(readAudio).toBeDefined();
+    expect(Array.from(readImage!.data)).toEqual(Array.from(imageBytes));
+    expect(Array.from(readAudio!.data)).toEqual(Array.from(audioBytes));
   });
 });
