@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -41,6 +43,7 @@ export default function RegisterPage() {
       }
 
       setSuccess(`Conta criada para ${payload.email}. Você já pode entrar.`);
+      router.push('/login');
     } catch {
       setError('Não foi possível conectar ao servidor. Tente novamente.');
     } finally {

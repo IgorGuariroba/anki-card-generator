@@ -5,9 +5,15 @@ import { cleanup } from '@testing-library/react';
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  pushMock.mockClear();
 });
 
 import RegisterPage from './page';
+
+const pushMock = vi.fn();
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: pushMock }),
+}));
 
 describe('cadastro', () => {
   it('permite preencher dados de uma nova conta', () => {
@@ -60,6 +66,7 @@ describe('cadastro', () => {
     fireEvent.click(screen.getByRole('button', { name: /criar conta/i }));
 
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(/conta criada/i));
+    expect(pushMock).toHaveBeenCalledWith('/login');
     expect(fetchMock).toHaveBeenCalledWith(
       '/api/auth/register',
       expect.objectContaining({
