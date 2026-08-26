@@ -63,6 +63,7 @@ export default function LoginPage() {
             {submitting ? 'Entrando…' : 'Entrar'}
           </button>
         </form>
+        <p className="auth-switch">Ainda não tem uma conta? <a href="/cadastro">Criar conta</a></p>
       </section>
     </main>
   );

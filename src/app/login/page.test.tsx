@@ -27,6 +27,12 @@ describe('login page', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it('oferece um link para criar uma conta', () => {
+    render(<LoginPage />);
+
+    expect(screen.getByRole('link', { name: /criar conta/i })).toHaveAttribute('href', '/cadastro');
+  });
+
   it('rejeita e-mail ou senha somente com espaços em branco, sem chamar o backend', () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
