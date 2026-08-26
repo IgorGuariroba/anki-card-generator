@@ -31,6 +31,7 @@ export default function LoginPage() {
 
       if (!response.ok) {
         setError(payload.error ?? 'Não foi possível entrar.');
+        setSubmitting(false);
         return;
       }
 

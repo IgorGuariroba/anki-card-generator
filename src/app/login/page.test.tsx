@@ -78,6 +78,7 @@ describe('login page', () => {
 
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/e-mail ou senha inválidos/i));
     expect(screen.getByText(/entrar na sua conta/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^entrar$/i })).toBeEnabled();
   });
 
   it('redireciona para /dashboard após autenticar com sucesso, sem exigir clique extra', async () => {
