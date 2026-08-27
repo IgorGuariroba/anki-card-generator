@@ -31,6 +31,26 @@ npm run verify
 
 Esse comando executa validação do plano, auditoria de dependências, typecheck, testes Vitest, ESLint e build Next.js.
 
+## Piloto Ralph: uma subetapa
+
+O piloto em `scripts/ralph-once.mjs` seleciona exatamente uma subetapa elegível do `project-plan.json`. Antes de permitir que o pi altere arquivos, ele exige `main` limpa, cria uma branch local `ralph/<step-id>/<substep-id>` e valida novamente o plano ao final.
+
+Confira a seleção sem chamar o pi nem alterar o Git:
+
+```bash
+npm run ralph:once -- --dry-run
+```
+
+Execute uma única subetapa:
+
+```bash
+npm run ralph:once
+```
+
+A execução real chama o pi no máximo uma vez e possui limite de 60 minutos. Ela para diante de dependência incompleta, plano inválido, execução concorrente, ausência de atualização verificável ou conclusão indevida de outra subetapa. Alterações ficam sem commit na branch criada para revisão humana; este piloto ainda não cria push, Pull Request ou merge automático.
+
+O pi usa a autenticação já configurada. `RALPH_PROVIDER`, `RALPH_MODEL` e `RALPH_THINKING` podem selecionar o runtime sem passar credenciais na linha de comando.
+
 ## Configuração
 
 A tela de dashboard permite informar uma chave OpenRouter, selecionar modelos de texto, tradução, imagem e áudio e ajustar voz, sotaque e velocidade. Nesta versão, essas configurações são apenas de interface: nenhuma chave é enviada, validada ou persistida em backend.

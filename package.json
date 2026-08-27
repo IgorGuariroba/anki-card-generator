@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "bash scripts/dev-restart.sh",
+    "ralph:once": "sh scripts/ralph-once.sh",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
