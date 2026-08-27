@@ -31,9 +31,9 @@ npm run verify
 
 Esse comando executa validação do plano, auditoria de dependências, typecheck, testes Vitest, ESLint e build Next.js.
 
-## Piloto Ralph: uma subetapa
+## Piloto Ralph: uma tarefa completa
 
-O piloto em `scripts/ralph-once.mjs` seleciona exatamente uma subetapa elegível do `project-plan.json`. Antes de permitir que o pi altere arquivos, ele exige `main` limpa, cria uma branch local `ralph/<step-id>/<substep-id>` e valida novamente o plano ao final.
+O piloto em `scripts/ralph-once.mjs` seleciona exatamente uma tarefa funcional elegível do `project-plan.json`. Na mesma execução do pi, pesquisas de código/documentação e definição de guardrails pendentes são tratadas como preparação obrigatória da tarefa, seguidas de implementação e verificações aplicáveis. Antes de permitir alterações, o runner exige `main` limpa, cria uma branch local `ralph/<step-id>/<task-id>` e valida novamente o plano ao final.
 
 Confira a seleção sem chamar o pi nem alterar o Git:
 
@@ -41,15 +41,15 @@ Confira a seleção sem chamar o pi nem alterar o Git:
 npm run ralph:once -- --dry-run
 ```
 
-Execute uma única subetapa:
+Execute uma única tarefa completa:
 
 ```bash
 npm run ralph:once
 ```
 
-A execução real chama o pi no máximo uma vez e possui limite de 60 minutos. Ela para diante de dependência incompleta, plano inválido, execução concorrente, ausência de atualização verificável ou conclusão indevida de outra subetapa. Alterações ficam sem commit na branch criada para revisão humana; este piloto ainda não cria push, Pull Request ou merge automático.
+A execução real chama o pi no máximo uma vez, transmite a saída em tempo real e possui limite de 60 minutos. Ela para diante de dependência incompleta, plano inválido, execução concorrente, ausência de atualização verificável ou conclusão indevida de outra tarefa funcional. Alterações ficam sem commit na branch criada para revisão humana; este piloto ainda não cria push, Pull Request ou merge automático.
 
-O pi usa a autenticação já configurada. `RALPH_PROVIDER`, `RALPH_MODEL` e `RALPH_THINKING` podem selecionar o runtime sem passar credenciais na linha de comando.
+Por padrão, o runner usa `openai-codex/gpt-5.6-luna` com thinking `low` e a autenticação já configurada no pi. `RALPH_PROVIDER`, `RALPH_MODEL` e `RALPH_THINKING` podem sobrescrever o runtime sem passar credenciais na linha de comando.
 
 ## Configuração
 
